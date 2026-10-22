@@ -44,7 +44,7 @@ class RewardPriorityTests(unittest.TestCase):
         c.reward_priority=list(reversed(DEFAULT_REWARD_ORDER));c.require_first_reward=False
         tasks=self.tasks(c)
         order=tasks['BlackFlow@Roguelike@LastReward-Strategy']['next']
-        self.assertEqual(len(order),18)  # 六种普通奖励各有模板和文字两种识别。
+        self.assertEqual(len(order),12)
         self.assertEqual(order[0],'BlackFlow@Roguelike@LastReward3')
         for animal in SERPENT_REWARDS:
             self.assertIn('AutoUtopia@Reward'+animal.removeprefix('襁褓'),order)
@@ -63,7 +63,7 @@ class RewardPriorityTests(unittest.TestCase):
         commit=tasks[entry[0]]['next'][0]
         next_selection=tasks[commit]['next'][-1]
         decision=tasks[next_selection]['next'][0]
-        self.assertEqual(len(tasks[decision]['next']),18)
+        self.assertEqual(len(tasks[decision]['next']),12)
         self.assertNotIn('BlackFlow@Roguelike@LastReward-Strategy',tasks[next_selection]['next'])
         self.assertTrue(tasks['AutoUtopia@RewardMissingNormal']['maxTimes']>1)
 
@@ -77,13 +77,12 @@ class RewardPriorityTests(unittest.TestCase):
         for reward in SERPENT_REWARDS:
             self.assertIn('AutoUtopia@Reward'+reward.removeprefix('襁褓'),tasks[decision]['next'])
 
-    def test_text_fallback_keeps_priority_and_blue_confirmation_has_text_fallback(self):
+    def test_native_normal_card_priority_and_blue_confirmation_text_fallback(self):
         c=Config.load();c.reward_target='默认排序';c.require_first_reward=False
         tasks=self.tasks(c)
         choices=tasks['BlackFlow@Roguelike@LastReward-Strategy']['next']
-        self.assertEqual(choices[:4],['BlackFlow@Roguelike@LastReward6',
-            'AutoUtopia@RewardText空间租赁','BlackFlow@Roguelike@LastReward2',
-            'AutoUtopia@RewardText林间代步'])
+        self.assertEqual(choices[:2],['BlackFlow@Roguelike@LastReward6','BlackFlow@Roguelike@LastReward2'])
+        self.assertFalse(any('RewardText' in task for task in choices))
         for reward in SERPENT_REWARDS:
             task=tasks['AutoUtopia@Reward'+reward.removeprefix('襁褓')]
             self.assertIn('AutoUtopia@RewardCommitText',task['next'])
@@ -91,12 +90,15 @@ class RewardPriorityTests(unittest.TestCase):
         self.assertEqual(confirm['text'],['你确定要这么做'])
         self.assertEqual(confirm['action'],'ClickSelf')
 
-    def test_strict_normal_target_tries_its_text_before_rejecting(self):
-        c=Config.load();c.require_first_reward=True;c.reward_target='默认排序'
+    def test_selected_blue_card_is_skipped_without_resetting_priority(self):
+        c=Config.load();c.require_first_reward=False;c.reward_target='默认排序'
+        c.reward_priority=['襁褓天马',*filter(lambda name:name!='襁褓天马',DEFAULT_REWARD_ORDER)]
         tasks=self.tasks(c)
         entry=tasks['BlackFlow@Roguelike@LastReward-Strategy']['next']
-        self.assertEqual(entry[:2],['BlackFlow@Roguelike@LastReward6','AutoUtopia@RewardText空间租赁'])
-        self.assertNotIn('空间租赁',tasks['AutoUtopia@RewardMissingBlue']['text'])
+        selected=tasks[entry[0]]
+        self.assertEqual(selected['maxTimes'],1)
+        self.assertEqual(selected['exceededNext'],entry[1:])
+        self.assertNotIn(entry[0],selected['exceededNext'])
 
     def test_blue_first_target_uses_ocr_and_legacy_setting_stays_compatible(self):
         c=Config.load();c.reward_priority=['襁褓天马',*[n for n in DEFAULT_REWARD_ORDER if n!='襁褓天马']]

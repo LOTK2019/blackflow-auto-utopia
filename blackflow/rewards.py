@@ -35,26 +35,22 @@ def install_reward_tasks(tasks, config):
     commit='AutoUtopia@RewardCommit'
     commit_text='AutoUtopia@RewardCommitText'
     names = {}
-    candidates = {}
     for name in order:
         if name in NORMAL_REWARDS:
             names[name] = p+'LastReward'+NORMAL_REWARDS[name]
             tasks[names[name]] = {'next':[commit,commit_text]}
-            fallback = 'AutoUtopia@RewardText'+name
-            tasks[fallback] = {'algorithm':'OcrDetect','text':[name],
-                               'roi':REWARD_NAMES_ROI,'action':'ClickSelf',
-                               'next':[commit,commit_text],'postDelay':200}
-            candidates[name] = [names[name],fallback]
         else:
             task = 'AutoUtopia@Reward'+name.removeprefix('襁褓')
             names[name] = task
             tasks[task] = {'algorithm':'OcrDetect','text':[name.removeprefix('襁褓')],
                            'roi':REWARD_NAMES_ROI,'action':'ClickSelf','next':[commit,commit_text],'postDelay':200}
-            candidates[name] = [task]
-    # 每种奖励先模板、再文字，再尝试下一种奖励，不能把所有文字回退
-    # 放在队尾，否则低优先级模板会抢在高优先级文字之前命中。
+    # 普通卡沿用原生模板的可选状态判断，不能只凭灰卡上的文字点击。
+    # 蓝卡文字选中过一次后，即使名称仍留在页面，也转去后面的候选。
     def choices(rewards):
-        return [task for name in rewards for task in candidates[name]]
+        return [names[name] for name in rewards]
+    for index,name in enumerate(order):
+        if name in SERPENT_REWARDS:
+            tasks[names[name]].update(maxTimes=1,exceededNext=choices(order[index+1:]))
     if not strict:
         tasks[p+'LastReward-Strategy'] = {'next':choices(order)}
     else:
@@ -72,7 +68,7 @@ def install_reward_tasks(tasks, config):
                         'maxTimes':3,'next':[p+'LastReward-Strategy'],
                         'exceededNext':['AutoUtopia@RewardRejected']}
             probes.append(key)
-        tasks[p+'LastReward-Strategy']={'next':[*candidates[order[0]],*probes]}
+        tasks[p+'LastReward-Strategy']={'next':[names[order[0]],*probes]}
         tasks['AutoUtopia@RewardRejected']={'algorithm':'JustReturn','action':'DoNothing','postDelay':30000,'next':['Stop']}
     # 所有选择留在同一次 ProcessTask 中。严格检查仅在入口执行；
     # 第一项被选中并确认后，后续页固定走普通排序，不再次要求第一项。
