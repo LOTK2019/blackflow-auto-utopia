@@ -1,0 +1,112 @@
+[
+  {
+    "action_points_after": 6,
+    "action_points_before": 6,
+    "confirmed_state_count": 611,
+    "decision_id": "BF-D2-2",
+    "decisive_metric": "",
+    "decisive_milestone_ids": [],
+    "decisive_rule_id": "light_reveals_three",
+    "eligible_candidates": 13,
+    "exact_cost": 1,
+    "floor": 2,
+    "forgone_milestone_ids": [],
+    "landing": 562949986975752,
+    "map_revision": 4,
+    "movement": "rogue_6_scrap_M_11",
+    "node_name": "羽瞰点",
+    "node_type": "light",
+    "observation_id": "BF-O4",
+    "path_edge_count": 1,
+    "planned_milestone_progress": {
+      "baby_cultivate_scrap_shop_transit": 1,
+      "burn_floor2_final": 1
+    },
+    "predicted_cost": 1,
+    "profile": "burn",
+    "reason_category": "development",
+    "rejection_counts": {
+      "hard_policy": 4,
+      "safety": 2
+    },
+    "relaxed_state_count": 8175,
+    "released_reserve_ids": [],
+    "route_search_expansions": 519,
+    "route_search_expansions_exhausted": false,
+    "route_search_time_exhausted": false,
+    "run_revision": 2,
+    "runners_up": [
+      {
+        "action_id": "rogue_6_scrap_M_11:562950054084610:562950020530184:562950020530184",
+        "node_type": "scrap_shop",
+        "predicted_cost": 1,
+        "target": 562950020530184
+      },
+      {
+        "action_id": "rogue_6_scrap_M_11:562950054084610:562950020530182:562950020530182",
+        "node_type": "empty",
+        "predicted_cost": 1,
+        "target": 562950020530182
+      }
+    ],
+    "safe_requirement": 2,
+    "safety_margin": 4,
+    "source": 562950054084610,
+    "target": 562949986975752,
+    "total_candidates": 19,
+    "transaction_id": "BF-T2-2",
+    "uses_inferred_edge": false
+  },
+  {
+    "action_points_after": 4,
+    "action_points_before": 6,
+    "confirmed_state_count": 211,
+    "decision_id": "BF-D2-3",
+    "decisive_metric": "",
+    "decisive_milestone_ids": [],
+    "decisive_rule_id": "utopia_seed_save_flight",
+    "eligible_candidates": 2,
+    "exact_cost": 2,
+    "floor": 2,
+    "forgone_milestone_ids": [],
+    "landing": 562950054084610,
+    "map_revision": 6,
+    "movement": "walk",
+    "node_name": "不期而遇",
+    "node_type": "incident",
+    "observation_id": "BF-O6",
+    "path_edge_count": 2,
+    "planned_milestone_progress": {
+      "baby_cultivate_scrap_shop_transit": 1,
+      "burn_floor2_final": 1
+    },
+    "predicted_cost": 2,
+    "profile": "burn",
+    "reason_category": "resource_reserve",
+    "rejection_counts": {
+      "hard_policy": 3,
+      "safety": 15
+    },
+    "relaxed_state_count": 786,
+    "released_reserve_ids": [],
+    "route_search_expansions": 77,
+    "route_search_expansions_exhausted": false,
+    "route_search_time_exhausted": false,
+    "run_revision": 2,
+    "runners_up": [
+      {
+        "action_id": "walk:562949986975746:562949953421314",
+        "node_type": "scrap_shop",
+        "predicted_cost": 1,
+        "target": 562949953421314
+      }
+    ],
+    "safe_requirement": 6,
+    "safety_margin": 0,
+    "source": 562949986975746,
+    "target": 562950054084610,
+    "total_candidates": 20,
+    "transaction_id": "BF-T2-3",
+    "uses_inferred_edge": false
+  }
+]

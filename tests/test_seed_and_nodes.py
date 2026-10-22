@@ -112,6 +112,8 @@ class SeedStrategyTests(unittest.TestCase):
         self.assertNotIn('baby_delay_exit_before_floor3',{r['id'] for r in route['rules']})
         by_id={r['id']:r for r in route['rules']}
         self.assertEqual(by_id['utopia_seed_direct_yellow']['kind'],'prefer')
+        self.assertEqual(by_id['utopia_seed_direct_yellow']['tier'],'resource_reserve')
+        self.assertLess(by_id['utopia_seed_direct_yellow']['rank'],by_id['utopia_seed_save_flight']['rank'])
         self.assertEqual(by_id['utopia_seed_keep_last_exit_flight']['kind'],'forbid')
         self.assertEqual(by_id['utopia_seed_no_battle']['candidate_if'],{'fact':'candidate.combat','op':'eq','value':True})
         reserve=next(r for r in route['reserves'] if r['id']=='baby_keep_cultivation_movement')
@@ -119,6 +121,50 @@ class SeedStrategyTests(unittest.TestCase):
         cultivate=next(m for m in s['modules'] if m['id']=='utopia_seed_cultivate')
         final=next(m for m in cultivate['milestones'] if m['id']=='baby_cultivate_scrap_shop_final')
         self.assertEqual(final['on_miss'],'ignore')
+
+    def test_real_visible_shop_detours_rank_shop_above_light_and_incident(self):
+        _,strategy=self.overlay('prepare')
+        route=next(m for m in strategy['modules'] if m['id']=='utopia_seed_route')
+        common=next(m for m in strategy['modules'] if m['id']=='common_navigation')
+        # 两个真实回执均已把黄店列为 eligible runner-up。这里只重放
+        # 安全过滤后的偏好排序，不伪造地图/路线可行性求解。
+        receipts=json.loads((Path(__file__).parent/'fixtures/visible-yellow-detours.json').read_text(encoding='utf-8'))
+        def matches(tree,facts):
+            if 'all' in tree:return all(matches(t,facts) for t in tree['all'])
+            if 'any' in tree:return any(matches(t,facts) for t in tree['any'])
+            a,b=facts.get(tree['fact']),tree['value']
+            if a is None:return False
+            return {'eq':lambda:a==b,'ne':lambda:a!=b,'ge':lambda:a>=b,'le':lambda:a<=b}[tree['op']]()
+        # 与已核对的原生选择器一致：strategy_constraint 的 prefer 不计分；
+        # ResourceReserve 的 prefer 在发展收益之前按 rank/id 比较。
+        def score(candidate,receipt,rules):
+            facts={'current_floor':2,'cultivation_completed':False,'scrap_shop_available':True,
+                   'candidate.node_type':candidate['node_type'],'candidate.movement':candidate['movement'],
+                   'candidate.exit':False,'candidate.light_reveal_count':3 if candidate['node_type']=='light' else 0}
+            ranks={'resource_reserve':0,'development':1,'risk':2,'tie_break':3}
+            active=[r for r in rules if r['kind']=='prefer' and r['tier'] in ranks and matches(r.get('when',{'all':[]}),facts)]
+            active.sort(key=lambda r:(ranks[r['tier']],r.get('rank',0),r['id']))
+            return tuple(0 if matches(r['candidate_if'],facts) else 1 for r in active)
+        for receipt in receipts:
+            shop=next(r for r in receipt['runners_up'] if r['node_type']=='scrap_shop')
+            chosen={'node_type':receipt['node_type'],'movement':receipt['movement']}
+            yellow={'node_type':'scrap_shop','movement':shop['action_id'].split(':',1)[0]}
+            rules=common.get('rules',[])+route['rules']
+            self.assertLess(score(yellow,receipt,rules),score(chosen,receipt,rules))
+            broken=deepcopy(rules)
+            next(r for r in broken if r['id']=='utopia_seed_direct_yellow')['tier']='strategy_constraint'
+            self.assertLess(score(chosen,receipt,broken),score(yellow,receipt,broken))
+
+    def test_flight_is_reserved_for_yellow_shop_and_exit_not_exploration(self):
+        _,s=self.overlay('prepare')
+        route=next(m for m in s['modules'] if m['id']=='utopia_seed_route')
+        rule=next(r for r in route['rules'] if r['id']=='utopia_seed_fly_shop_or_exit_only')
+        self.assertEqual((rule['kind'],rule['tier']),('forbid','legality'))
+        self.assertIn({'fact':'candidate.node_type','op':'ne','value':'scrap_shop'},rule['candidate_if']['all'])
+        self.assertIn({'fact':'candidate.exit','op':'eq','value':False},rule['candidate_if']['all'])
+        leave=next(r for r in route['rules'] if r['id']=='utopia_seed_leave_after_plant')
+        self.assertEqual(leave['tier'],'resource_reserve')
+        self.assertLess(leave['rank'],0)
 
     def test_map_inspection_has_no_start_recruit_or_abandon_entry_and_forbids_moves(self):
         tasks,s=self.overlay('map')

@@ -62,22 +62,24 @@ def seed_burn_strategy(strategy, require_animals=False):
     direct = {'any':[{'fact':'candidate.movement','op':'eq','value':'rogue_6_scrap_M_11'},
                      {'fact':'candidate.movement','op':'eq','value':'walk'}]}
     def fact(name,value,op='eq'):return {'fact':name,'op':op,'value':value}
-    def rule(name,when,target):
-        return {'id':name,'kind':'require','tier':'strategy_constraint','rank':0,
+    def rule(name,when,target,*,prefer=False,rank=0):
+        return {'id':name,'kind':'prefer' if prefer else 'require',
+                'tier':'resource_reserve' if prefer else 'strategy_constraint','rank':rank,
                 'when':{'all':when},'candidate_if':{'all':[direct,target]}}
     route['rules'] += [
         rule('utopia_seed_direct_yellow',[fact('cultivation_completed',False),fact('scrap_shop_available',True)],
-             fact('candidate.node_type','scrap_shop')),
+             fact('candidate.node_type','scrap_shop'),prefer=True,rank=-1000),
         rule('utopia_seed_leave_after_plant',[fact('cultivation_completed',True),fact('current_floor',2,'le')],
-             fact('candidate.exit',True)),
+             fact('candidate.exit',True),prefer=True,rank=-900),
         rule('utopia_seed_first_floor_without_yellow',[fact('current_floor',1),fact('scrap_shop_available',False)],
              fact('candidate.exit',True)),
     ]
-    # “有机会就去”不是“看见黄商店便禁止其它一切路线”。不可达时仍须
-    # 允许安全撤离；原生 feasible_hard 种植里程碑负责可行性约束。
-    for entry in route['rules']:
-        if entry['id'] in ('utopia_seed_direct_yellow','utopia_seed_leave_after_plant'):
-            entry['kind']='prefer'
+    # 原生评分器不为 strategy_constraint 层的 prefer 计分。放到它实际
+    # 优先评分的 resource_reserve 层，并排在“省加工品/探路”之前。
+    # 仍是安全候选间的偏好；不可达黄店不会把撤离路线全部硬性禁掉。
+    route['rules'].append({'id':'utopia_seed_fly_shop_or_exit_only','kind':'forbid','tier':'legality','rank':0,
+        'candidate_if':{'all':[fact('candidate.movement','rogue_6_scrap_M_11'),
+            fact('candidate.node_type','scrap_shop','ne'),fact('candidate.exit',False)]}})
     route['rules'].append({'id':'utopia_seed_keep_last_exit_flight','kind':'forbid','tier':'resource_reserve','rank':0,
         'when':{'all':[fact('current_floor',2,'le'),fact('persistent_full_map_count',1,'le')]},
         'candidate_if':{'all':[fact('candidate.movement','rogue_6_scrap_M_11'),fact('candidate.exit',False)]}})
