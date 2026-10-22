@@ -73,6 +73,8 @@ class Runner:
 
     def save_error_report(self, exc):
         """尽力保存新鲜错误截图；取图失败不能掩盖原异常，缓存图明确标为旧图。"""
+        if isinstance(exc,Stopped):
+            return None
         if self._reported_exception is exc:
             return self._error_report
         folder = self.session / 'errors'

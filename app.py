@@ -12,7 +12,7 @@ from blackflow.config import Config, ROOT, REWARD_TARGETS, BUNDLED_MAA
 from blackflow.errors import describe_error
 from blackflow.discovery import discover
 from blackflow.runner import Runner
-from blackflow.adb import ADB, save_image
+from blackflow.adb import ADB, Stopped, save_image
 from blackflow.vision import Vision, ideal_from_text
 from blackflow.ui_layout import ScrollFrame, enable_dpi_awareness, initial_geometry, work_area
 from blackflow.strategy import PREPARE_METHODS
@@ -324,6 +324,9 @@ class App:
         def task():
             try:
                 fn()
+            except Stopped:
+                self.bus.put(('log','已停止，保留现场'))
+                self.bus.put(('status','已停止，保留现场'))
             except Exception as exc:
                 if self.runner is not None:
                     try:
@@ -454,6 +457,9 @@ def main():
                 frame = runner.connect()
                 data = runner.vision.texts(frame)
                 print(json.dumps({"ocr": data, "ideal": ideal_from_text(data)}, ensure_ascii=False, indent=2))
+        except Stopped:
+            print('已停止，保留现场')
+            return
         except Exception as exc:
             try:
                 runner.save_error_report(exc)

@@ -9,6 +9,7 @@ from unittest.mock import Mock, patch
 import numpy as np
 
 from blackflow.runner import Runner
+from blackflow.adb import Stopped
 
 
 class ErrorReportTests(unittest.TestCase):
@@ -96,3 +97,19 @@ class ErrorReportTests(unittest.TestCase):
             self.assertFalse(ui.thread.is_alive())
             self.assertEqual(len(list((Path(folder)/'errors').glob('*.png'))),1)
             self.assertTrue((Path(folder)/'错误详情.log').is_file())
+
+    def test_manual_stop_is_not_saved_or_displayed_as_an_error(self):
+        import app
+        with tempfile.TemporaryDirectory() as folder:
+            runner=self.runner(folder)
+            self.assertIsNone(runner.save_error_report(Stopped()))
+            ui=object.__new__(app.App);ui.thread=None;ui.bus=queue.Queue();ui.start_button=Mock()
+            def stopped_diagnosis():
+                ui.runner=runner
+                raise Stopped()
+            with patch('app.ROOT',Path(folder)):
+                ui.background(stopped_diagnosis)
+                ui.thread.join(timeout=10)
+            self.assertFalse((Path(folder)/'errors').exists())
+            self.assertFalse((Path(folder)/'错误详情.log').exists())
+            runner.adb.screenshot.assert_not_called()

@@ -6,6 +6,8 @@ MuMu / ADB 桌面脚本，复用 MAA 的开局、干员招募、种植、投资�
 
 **下载：** [最新 Windows 独立版](https://github.com/LOTK2019/blackflow-auto-utopia/releases/latest)。下载 Release 中的完整 Windows ZIP，不要把 GitHub 自动生成的 Source code ZIP 当作可执行版本。完整解压后运行 `自动实托邦.exe`，不要只复制 EXE。
 
+**羽蛇问题候选修正：** [v0.1.1-rc.1 增量补丁](https://github.com/LOTK2019/blackflow-auto-utopia/releases/tag/v0.1.1-rc.1)，需先安装 v0.1.0 完整包，关闭程序后覆盖到原 EXE 所在目录。包含蓝色奖励页识别修正和报错截图保存；蓝卡实图尚待复测，详见候选版说明。
+
 ## 启动
 
 独立版完整解压后双击 **自动实托邦.exe**，不需要 Python 或本地 MAA。配置和日志存放于 `%LOCALAPPDATA%\BlackFlowUtopia`，内置引擎固定使用随包资源。首次请自动发现 MuMu，或手填本机模拟器的 ADB 路径和地址。
