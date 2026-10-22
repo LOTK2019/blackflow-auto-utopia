@@ -13,7 +13,7 @@ import cv2
 import numpy as np
 from .adb import ADB, Stopped, save_image, load_image
 from .config import ROOT, RESOURCE_ROOT, APP_ROOT
-from .errors import describe_error
+from .errors import describe_error, error_event
 from .progress import WorkerProgress
 from .recovery import ReadPolicy, ReadExhausted, read_with_recovery
 from .nodes import effective_nodes
@@ -33,6 +33,10 @@ class Runner:
         self.session.mkdir(parents=True, exist_ok=True)
         self.phase = "idle"
         self.cycle = 0
+        self.last_frame = None
+        self.last_frame_at = None
+        self._reported_exception = None
+        self._error_report = None
 
     def set_phase(self, phase):
         self.phase = phase
@@ -63,8 +67,46 @@ class Runner:
     def capture(self, label):
         frame = self.adb.screenshot()
         save_image(self.session / f"{self.cycle:03d}-{label}.png", frame)
+        self.last_frame, self.last_frame_at = frame.copy(), datetime.now().isoformat()
         self.preview(frame)
         return frame
+
+    def save_error_report(self, exc):
+        """尽力保存新鲜错误截图；取图失败不能掩盖原异常，缓存图明确标为旧图。"""
+        if self._reported_exception is exc:
+            return self._error_report
+        folder = self.session / 'errors'
+        folder.mkdir(parents=True, exist_ok=True)
+        stem = f'{self.cycle:03d}-'+datetime.now().strftime('%H%M%S-%f')
+        report = {**error_event(exc), 'phase':self.phase, 'cycle':self.cycle,
+                  'occurred_at':datetime.now().isoformat(), 'screenshot':None}
+        try:
+            if self.stop.is_set():
+                raise RuntimeError('已请求停止，未继续向设备请求截图')
+            frame = self.adb.screenshot()
+            path = folder / (stem+'-error.png')
+            save_image(path,frame)
+            report.update(screenshot=path.name,screenshot_source='fresh',
+                          captured_at=datetime.now().isoformat())
+        except Exception as shot_error:
+            report['screenshot_error'] = describe_error(shot_error)
+            if self.last_frame is not None:
+                try:
+                    path = folder / (stem+'-last-known.png')
+                    save_image(path,self.last_frame)
+                    report.update(screenshot=path.name,screenshot_source='last_known',
+                                  captured_at=self.last_frame_at)
+                except Exception as fallback_error:
+                    report['fallback_error'] = describe_error(fallback_error)
+        path = folder / (stem+'.json')
+        path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+        self._reported_exception, self._error_report = exc,path
+        self.log('错误现场记录：'+str(path))
+        if report['screenshot']:
+            self.log(('报错界面截图：' if report['screenshot_source']=='fresh' else '最后一次成功截图（非报错时实时画面）：')+str(folder/report['screenshot']))
+        if report.get('screenshot_error'):
+            self.log('错误现场截图失败：'+report['screenshot_error'])
+        return path
 
     @staticmethod
     def acquire_lock():
@@ -385,11 +427,13 @@ class Runner:
             return "stopped"
         except Exception as exc:
             try:
-                if not self.stop.is_set():
-                    self.capture("error")
-            except Exception:
-                pass
-            self.set_phase("错误停止：" + describe_error(exc))
+                self.save_error_report(exc)
+            except Exception as report_error:
+                self.log('保存错误现场失败：'+describe_error(report_error))
+            try:
+                self.set_phase("错误停止：" + describe_error(exc))
+            except Exception as state_error:
+                self.log('写入错误状态失败：'+describe_error(state_error))
             raise
         finally:
             if lock is not None:

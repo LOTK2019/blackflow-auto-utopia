@@ -319,12 +319,22 @@ class App:
             messagebox.showinfo("任务进行中", "请先停止当前任务")
             return
 
+        self.runner = None  # 自动发现失败不能把上一次运行画面当作本次现场。
+
         def task():
             try:
                 fn()
             except Exception as exc:
-                with (ROOT / "错误详情.log").open("a", encoding="utf-8") as detail:
-                    traceback.print_exc(file=detail)
+                if self.runner is not None:
+                    try:
+                        self.runner.save_error_report(exc)
+                    except Exception as report_error:
+                        self.bus.put(('log','保存错误现场失败：'+describe_error(report_error)))
+                try:
+                    with (ROOT / "错误详情.log").open("a", encoding="utf-8") as detail:
+                        traceback.print_exception(type(exc),exc,exc.__traceback__,file=detail)
+                except Exception as log_error:
+                    self.bus.put(('log','写入错误详情失败：'+describe_error(log_error)))
                 self.bus.put(("log", describe_error(exc) + f"；完整错误：{ROOT / '错误详情.log'}"))
                 self.bus.put(("status", "已停止：" + describe_error(exc)))
             finally:
@@ -433,16 +443,23 @@ def main():
         sys.stdout.reconfigure(encoding="utf-8")
         c = Config.load()
         runner = Runner(c)
-        if args.run:
-            runner.run()
-        elif args.phase:
-            c.validate()
-            runner.connect()
-            print(runner.maa(args.phase))
-        else:
-            frame = runner.connect()
-            data = runner.vision.texts(frame)
-            print(json.dumps({"ocr": data, "ideal": ideal_from_text(data)}, ensure_ascii=False, indent=2))
+        try:
+            if args.run:
+                runner.run()
+            elif args.phase:
+                c.validate()
+                runner.connect()
+                print(runner.maa(args.phase))
+            else:
+                frame = runner.connect()
+                data = runner.vision.texts(frame)
+                print(json.dumps({"ocr": data, "ideal": ideal_from_text(data)}, ensure_ascii=False, indent=2))
+        except Exception as exc:
+            try:
+                runner.save_error_report(exc)
+            except Exception as report_error:
+                print('保存错误现场失败：'+describe_error(report_error))
+            raise
         return
     enable_dpi_awareness()
     root = tk.Tk()

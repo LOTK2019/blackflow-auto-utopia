@@ -56,4 +56,8 @@ if __name__ == "__main__":
             app.main()
     except Exception:
         traceback.print_exc()
+        if any(flag in sys.argv for flag in ('--diagnose','--run','--phase','--ui-check','--image-check','--package-check')):
+            # 无控制台版本的命令行诊断必须非零退出，不能卡在 bootloader
+            # 的未处理异常弹窗；原异常及错误现场已经保存在用户数据目录。
+            raise SystemExit(1)
         raise

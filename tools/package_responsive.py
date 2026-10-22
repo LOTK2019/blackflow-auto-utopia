@@ -12,7 +12,7 @@ sys.path.insert(0, str(ROOT))
 from blackflow.config import Config
 
 
-def package(bundle_path='dist-responsive/自动实托邦', output='release/自动实托邦-Windows-自适应独立版.zip'):
+def package(bundle_path='dist-responsive/自动实托邦', output='release/自动实托邦-Windows-自适应独立版.zip', version='v0.1.0', build='20261022-ap-guard'):
     bundle = ROOT / bundle_path
     prior = ROOT / 'dist-standalone-final/自动实托邦'
     for name in ('EXE使用说明.txt', 'LICENSE', 'README.md', '验证记录.md', 'THIRD_PARTY_NOTICES.md'):
@@ -36,7 +36,7 @@ def package(bundle_path='dist-responsive/自动实托邦', output='release/自�
     ap_verification=ROOT/'runtime/ap-budget-verification.json'
     if ap_verification.is_file():
         shutil.copy2(ap_verification,bundle/'步数预算验证.json')
-    (bundle/'版本信息.json').write_text(json.dumps({'build':'20261022-ap-guard',
+    (bundle/'版本信息.json').write_text(json.dumps({'build':build,'version':version,
         'packaged_at':datetime.now().isoformat(),'engine':manifest['version'],
         'movement_budget':'移动前硬过滤','minimum_remaining_ap':1,
         'before_third_floor_exploration_min_ap':2},ensure_ascii=False,indent=2),encoding='utf-8')
@@ -69,5 +69,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--bundle', default='dist-responsive/自动实托邦')
     parser.add_argument('--output', default='release/自动实托邦-Windows-自适应独立版.zip')
+    parser.add_argument('--version',default='v0.1.0')
+    parser.add_argument('--build',default='20261022-ap-guard')
     args = parser.parse_args()
-    package(args.bundle, args.output)
+    package(args.bundle, args.output,args.version,args.build)
