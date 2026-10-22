@@ -67,6 +67,14 @@ def install_native_recovery(tasks, maa_dir, phase):
     targets = [r+'Recruit', r+'Floor']
     if phase == 'prepare':
         targets.insert(0, r+'Event')
+        # 尽头事件退出后可能仍在加载。Stages 原生错误分支直接放弃，
+        # 要先重读楼层/地图；地图明确就绪后才返回原来的调度器。
+        for suffix, base in (('MapReady','Stages-MapReady'), ('MapZoomOut','Stages-ZoomOut')):
+            tasks[r+suffix] = {
+                'baseTask':p+base, 'action':'DoNothing', 'maxTimes':3,
+                'exceededNext':[r+'Exhausted'], 'next':[p+'Stages'],
+                'onErrorNext':[r+'Wait']}
+            targets.append(r+suffix)
         tasks[r+'Event'] = {
             'baseTask': p+'StageEncounterOcr', 'action':'DoNothing', 'preDelay':800,
             'maxTimes':3, 'exceededNext':[r+'Exhausted'],
@@ -107,12 +115,13 @@ def install_native_recovery(tasks, maa_dir, phase):
         'maxTimes':3,'next':recruit_choices,'exceededNext':[r+'Wait']}
     # 任何恢复分支都不会直接重开一局、放弃、随机选择、重新执行完整招募插件。
     patch(p+'RecoveryFailed', next=[r+'Wait'])
+    patch(p+'Stages', onErrorNext=[r+'Wait'])
     for name in (p+'StageEncounterJudgeOption', 'BlackFlow@StartExplore@Roguelike@ChooseOper'):
         patch(name, onErrorNext=[r+'Wait'])
     # 正常页之间的短暂动画、确认文字漏识别交给原有 ProcessTask 重读，再进统一恢复。
     resets = [r+'Wait*6', r+'Recruit*3', r+'RecruitRead*3', r+'Floor*3']
     if phase == 'prepare':
-        resets.append(r+'Event*3')
+        resets.extend([r+'Event*3',r+'MapReady*3',r+'MapZoomOut*3'])
     for name in (p+'StageEncounterReward', p+'NextLevel', p+'EnterAfterRecruit'):
         original = tasks.get(name, {}).get('reduceOtherTimes', raw.get(name, {}).get('reduceOtherTimes', []))
         patch(name, reduceOtherTimes=[*original,*resets])

@@ -93,6 +93,30 @@ class NativeRecoveryTests(unittest.TestCase):
     def test_explicit_abandon_phase_does_not_get_recovery_loops(self):
         self.assertFalse(any(k.startswith('AutoUtopia@Recovery') for k in self.overlay('abandon')))
 
+    def test_post_exit_loading_failure_recovers_without_native_abandon(self):
+        # 032-prepare: CloseEventAfterEncounter -> Stages 识别失败，原生
+        # onErrorNext 直接进入 ExitThenAbandon，导致二层就清掉探索。
+        p='BlackFlow@Roguelike@'; r='AutoUtopia@Recovery'
+        for phase in ('prepare','formal'):
+            tasks=self.overlay(phase)
+            self.assertEqual(tasks[p+'Stages']['onErrorNext'],[r+'Wait'])
+            pending=list(tasks[p+'Stages']['onErrorNext']); visited=set()
+            while pending:
+                name=pending.pop()
+                self.assertNotIn('Abandon',name)
+                if name in visited or not name.startswith(r):continue
+                visited.add(name)
+                node=tasks[name]
+                pending.extend(node.get('next',[])+node.get('exceededNext',[])+node.get('onErrorNext',[]))
+            if phase=='prepare':
+                for suffix in ('MapReady','MapZoomOut'):
+                    self.assertIn(r+suffix,tasks[r+'Wait']['next'])
+                    self.assertEqual(tasks[r+suffix]['action'],'DoNothing')
+                    self.assertEqual(tasks[r+suffix]['maxTimes'],3)
+            else:
+                self.assertNotIn(r+'MapReady',tasks)
+                self.assertNotIn(r+'MapZoomOut',tasks)
+
 
 class RunnerRecoveryTests(unittest.TestCase):
     def runner(self):

@@ -57,6 +57,7 @@ class RewardPriorityTests(unittest.TestCase):
 
     def test_strict_only_applies_to_initial_selection(self):
         c=Config.load();c.reward_target='默认排序';c.require_first_reward=True
+        c.reward_priority=list(DEFAULT_REWARD_ORDER)
         tasks=self.tasks(c)
         entry=tasks['BlackFlow@Roguelike@LastReward-Strategy']['next']
         self.assertEqual(entry[0],'BlackFlow@Roguelike@LastReward6')
@@ -79,6 +80,7 @@ class RewardPriorityTests(unittest.TestCase):
 
     def test_native_normal_card_priority_and_blue_confirmation_text_fallback(self):
         c=Config.load();c.reward_target='默认排序';c.require_first_reward=False
+        c.reward_priority=list(DEFAULT_REWARD_ORDER)
         tasks=self.tasks(c)
         choices=tasks['BlackFlow@Roguelike@LastReward-Strategy']['next']
         self.assertEqual(choices[:2],['BlackFlow@Roguelike@LastReward6','BlackFlow@Roguelike@LastReward2'])
