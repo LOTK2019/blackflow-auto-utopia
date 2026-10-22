@@ -1,0 +1,105 @@
+[
+  {
+    "msg": 20002,
+    "data": {
+      "details": {
+        "action": "DoNothing",
+        "algorithm": "JustReturn",
+        "exec_times": 1,
+        "max_times": 2147483647,
+        "result": {},
+        "task": "MovePreviewConfirmCompletedDone"
+      }
+    }
+  },
+  {
+    "msg": 20003,
+    "data": {
+      "details": {
+        "attempt_count": 1,
+        "columns": 7,
+        "confirmed_edge_count": 36,
+        "current_node": 844424997240836,
+        "floor": 3,
+        "floor_from_ocr": true,
+        "forced_edge_count": 0,
+        "map_revision": 21,
+        "node_count": 32,
+        "observation_id": "BF-O21",
+        "recognition_us": 739098,
+        "retry_count": 0,
+        "rows": 5,
+        "run_revision": 2,
+        "screenshot_us": 315784,
+        "source": "recognition",
+        "supplemented_exits": [],
+        "unclassified_count": 0
+      },
+      "what": "BlackFlowMapSummary"
+    }
+  },
+  {
+    "msg": 20003,
+    "data": {
+      "details": {
+        "action_points_after": 0,
+        "action_points_before": 4,
+        "confirmed_state_count": 8,
+        "decision_id": "BF-D2-11",
+        "decisive_metric": "",
+        "decisive_milestone_ids": [],
+        "decisive_rule_id": "",
+        "eligible_candidates": 5,
+        "exact_cost": 4,
+        "floor": 3,
+        "forgone_milestone_ids": [],
+        "landing": 844424930131968,
+        "map_revision": 21,
+        "movement": "walk",
+        "node_name": "不期而遇",
+        "node_type": "incident",
+        "observation_id": "BF-O21",
+        "path_edge_count": 4,
+        "planned_milestone_progress": {
+          "baby_cultivate_scrap_shop_final": 0,
+          "baby_explore_hidden": 0,
+          "baby_visit_incident": 1
+        },
+        "predicted_cost": 4,
+        "profile": "burn",
+        "reason_category": "tie_break",
+        "rejection_counts": {
+          "hard_policy": 2
+        },
+        "relaxed_state_count": 132,
+        "released_reserve_ids": [],
+        "route_search_expansions": 30,
+        "route_search_expansions_exhausted": false,
+        "route_search_time_exhausted": false,
+        "run_revision": 2,
+        "runners_up": [
+          {
+            "action_id": "walk:844424997240836:844425030795266",
+            "node_type": "incident",
+            "predicted_cost": 4,
+            "target": 844425030795266
+          },
+          {
+            "action_id": "walk:844424997240836:844424997240838",
+            "node_type": "door",
+            "predicted_cost": 1,
+            "target": 844424997240838
+          }
+        ],
+        "safe_requirement": 4,
+        "safety_margin": 0,
+        "source": 844424997240836,
+        "target": 844424930131968,
+        "total_candidates": 7,
+        "transaction_id": "BF-T2-11",
+        "uses_inferred_edge": false
+      },
+      "what": "BlackFlowRoutingDecision"
+    }
+  }
+]

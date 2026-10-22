@@ -1,0 +1,34 @@
+name: 错误反馈
+description: 卡住、招募/识别/连接失败或其他异常
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请先停止程序并保留游戏现场。公开附件前遮盖账号信息、私人路径和其他个人信息，不要上传登录凭据。
+        EXE 日志位于 %LOCALAPPDATA%\BlackFlowUtopia；源码运行位于项目目录。
+  - type: input
+    id: version
+    attributes:
+      label: 程序版本 / Release 标签
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 运行环境
+      description: Windows、模拟器与版本、游戏分辨率、系统缩放、截图增强是否开启、ADB 自动或手动连接。
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤与实际结果
+      description: 从哪个画面开始、配置了哪些筛选、停在哪一步，预期应该怎样。
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志与截图附件
+      description: 将出问题那次 artifacts/时间目录、对应 runtime/maa-prepare/debug 或 maa-formal/debug、错误详情.log 压缩后拖到这里。再次运行前先备份，上传前检查个人信息。

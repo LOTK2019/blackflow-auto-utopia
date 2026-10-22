@@ -1,0 +1,43 @@
+{
+  "maa_dir": "vendor/maa",
+  "adb_path": "",
+  "address": "auto",
+  "difficulty": 16,
+  "roles": "灵活部署",
+  "six_star": "结城理",
+  "four_stars": [
+    "冬时",
+    "深海色"
+  ],
+  "use_support": false,
+  "use_nonfriend_support": false,
+  "fallback_six_stars": [],
+  "allow_other_six_star": true,
+  "reward_target": "默认排序",
+  "prepare_squad": "堡垒战术分队",
+  "prepare_roles": "坚不可摧",
+  "phase_timeout": 900,
+  "prepare_method": "黄商店种植",
+  "node_filter_enabled": false,
+  "min_effective_nodes": 10,
+  "reward_priority": [
+    "空间租赁",
+    "林间代步",
+    "调查预付款",
+    "未编号物",
+    "退行补偿",
+    "襁褓天马",
+    "襁褓骏鹰",
+    "襁褓巨龙",
+    "襁褓九头蛇",
+    "襁褓白泽",
+    "襁褓金乌",
+    "巢寄生"
+  ],
+  "require_first_reward": false,
+  "animal_counts": {
+    "猫": 0,
+    "狗": 0,
+    "三头犬": 0
+  }
+}

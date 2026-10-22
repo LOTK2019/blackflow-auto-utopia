@@ -1,0 +1,156 @@
+from copy import deepcopy
+import json
+from pathlib import Path
+import tempfile
+import unittest
+from unittest.mock import Mock
+
+from blackflow.config import Config
+from blackflow.maa_worker import make_overlay
+from blackflow.nodes import effective_nodes
+from blackflow.runner import Runner
+from blackflow.strategy import SEED_PROFILE, COUNT_PROFILE, optional_seed_completion, seed_action_point_rules
+
+
+def snapshot(types, **extra):
+    return {'floor':1,'floor_from_ocr':True,'node_count':len(types),
+            'nodes':[{'row':0,'column':i,'type':t,'identity_state':'classified'} for i,t in enumerate(types)], **extra}
+
+
+class NodeCountTests(unittest.TestCase):
+    def test_counts_every_nonempty_node_including_hidden_nodes(self):
+        data=snapshot(['empty','shop','scrap_shop','incident','hide_invisible','final','empty'])
+        result=effective_nodes(data)
+        self.assertEqual((result['effective'],result['empty'],result['total']),(5,2,7))
+
+    def test_incomplete_or_unclassified_map_is_not_a_low_count(self):
+        for data in (snapshot(['empty'],node_count=2),snapshot(['unclassified']),
+                     snapshot(['shop'],floor=2),snapshot(['shop'],floor_from_ocr=False)):
+            with self.assertRaises(ValueError):effective_nodes(data)
+        data=snapshot(['shop','shop']);data['nodes'][1]['column']=0
+        with self.assertRaises(ValueError):effective_nodes(data)
+
+    def test_node_filter_defaults_off_and_seed_preparation_defaults_on(self):
+        c=Config()
+        self.assertFalse(c.node_filter_enabled)
+        self.assertEqual(c.prepare_method,'黄商店种植')
+
+    def test_recount_recovers_then_requires_two_consistent_independent_maps(self):
+        r=Runner(Config.load(),log=lambda _:None);r.capture=Mock();r.adb=Mock()
+        r.maa=Mock(side_effect=[{'node_maps':[]},{'node_maps':[snapshot(['shop','empty'])]},
+                                {'node_maps':[snapshot(['shop','empty'])]}])
+        self.assertEqual(r.count_effective_nodes(),1)
+        self.assertEqual(r.maa.call_count,3)
+        r.adb.tap.assert_not_called()
+
+    def test_disagreement_does_not_silently_reject_run(self):
+        r=Runner(Config.load(),log=lambda _:None);r.capture=Mock();r.adb=Mock()
+        r.maa=Mock(side_effect=[{'node_maps':[snapshot(['shop']*n)]} for n in (2,3,2,3)])
+        with self.assertRaisesRegex(RuntimeError,'保留正式局'):r.count_effective_nodes()
+
+
+class SeedStrategyTests(unittest.TestCase):
+    def ap_forbids(self,points,edges,floor=3,movement='walk',exit=False):
+        facts={'action_points':points,'current_floor':floor,'candidate.move_edges':edges,
+               'candidate.movement':movement,'candidate.exit':exit}
+        def matches(tree):
+            if 'all' in tree:return all(matches(x) for x in tree['all'])
+            if 'any' in tree:return any(matches(x) for x in tree['any'])
+            a,b=facts[tree['fact']],tree['value']
+            return {'eq':lambda:a==b,'ne':lambda:a!=b,'ge':lambda:a>=b,'le':lambda:a<=b}[tree['op']]()
+        return any(matches(r['when']) and matches(r['candidate_if']) for r in seed_action_point_rules())
+
+    def test_real_chase_causing_move_is_forbidden_before_commit(self):
+        events=json.loads((Path(__file__).parent/'fixtures/third-floor-zero-ap.json').read_text(encoding='utf-8'))
+        decision=events[-1]['data']['details']
+        self.assertTrue(self.ap_forbids(decision['action_points_before'],decision['path_edge_count'],decision['floor']))
+        for rule in seed_action_point_rules():
+            self.assertEqual((rule['kind'],rule['tier']),('forbid','legality'))
+
+    def test_never_spend_last_point_even_for_shop_and_reserve_escape_before_floor3(self):
+        self.assertTrue(self.ap_forbids(1,1))
+        self.assertTrue(self.ap_forbids(1,0,movement='rogue_6_scrap_M_11'))
+        self.assertFalse(self.ap_forbids(2,1))
+        self.assertTrue(self.ap_forbids(3,2,floor=2))
+        self.assertFalse(self.ap_forbids(3,2,floor=2,exit=True))
+        self.assertTrue(self.ap_forbids(2,0,floor=2,movement='rogue_6_scrap_M_11'))
+        self.assertFalse(self.ap_forbids(2,0,floor=2,movement='rogue_6_scrap_M_11',exit=True))
+    def test_only_confirmed_third_floor_safe_route_exhaustion_is_normal_completion(self):
+        result={'outcome':'planning_failed','termination_reason':'no eligible safe candidate','succeeded':False}
+        summary={'floor':3,'floor_from_ocr':True,'unclassified_count':0}
+        self.assertTrue(optional_seed_completion(result,summary)['succeeded'])
+        for bad in ({**summary,'floor':2},{**summary,'floor_from_ocr':False}):
+            self.assertFalse(optional_seed_completion(result,bad)['succeeded'])
+        self.assertFalse(optional_seed_completion({**result,'outcome':'map_rebuild_failed'},summary)['succeeded'])
+    def overlay(self,phase):
+        with tempfile.TemporaryDirectory() as folder:
+            make_overlay(Config.load(),phase,Path(folder))
+            base=Path(folder)/'resource'
+            tasks=json.loads((base/'tasks/tasks.json').read_text(encoding='utf-8'))
+            p=base/'roguelike/BlackFlow/strategy.json'
+            return tasks,json.loads(p.read_text(encoding='utf-8')) if p.exists() else None
+
+    def test_seed_mode_does_not_require_harvest_by_default(self):
+        _,s=self.overlay('prepare')
+        p=next(p for p in s['profiles'] if p['id']==SEED_PROFILE)
+        self.assertNotIn('burn_investment_shop',p['modules'])
+        success=next(r for r in p['terminal_rules'] if r['succeeded'])
+        self.assertEqual(success['when']['all'][0],{'fact':'current_floor','op':'ge','value':3})
+        self.assertEqual(success['when']['all'][1],{'fact':'cultivation_completed','op':'eq','value':True})
+        route=next(m for m in s['modules'] if m['id']=='utopia_seed_route')
+        self.assertFalse(route['shopping_rules'])
+        flight=next(m for m in s['modules'] if m['id']=='utopia_seed_flight')
+        self.assertFalse(flight['rules'])
+        self.assertTrue(flight['granted_scraps'])
+
+    def test_unspecified_animals_still_search_yellow_before_leaving(self):
+        _,s=self.overlay('prepare')
+        route=next(m for m in s['modules'] if m['id']=='utopia_seed_route')
+        self.assertEqual({m['id'] for m in route['milestones']},{'baby_explore_hidden','baby_visit_incident'})
+        self.assertNotIn('utopia_seed_second_floor_without_yellow',{r['id'] for r in route['rules']})
+        self.assertIn('utopia_seed_save_flight',{r['id'] for r in route['rules']})
+        self.assertNotIn('baby_delay_exit_before_floor3',{r['id'] for r in route['rules']})
+        by_id={r['id']:r for r in route['rules']}
+        self.assertEqual(by_id['utopia_seed_direct_yellow']['kind'],'prefer')
+        self.assertEqual(by_id['utopia_seed_keep_last_exit_flight']['kind'],'forbid')
+        self.assertEqual(by_id['utopia_seed_no_battle']['candidate_if'],{'fact':'candidate.combat','op':'eq','value':True})
+        reserve=next(r for r in route['reserves'] if r['id']=='baby_keep_cultivation_movement')
+        self.assertIn({'fact':'candidate.exit','op':'eq','value':True},reserve['release_if']['any'])
+        cultivate=next(m for m in s['modules'] if m['id']=='utopia_seed_cultivate')
+        final=next(m for m in cultivate['milestones'] if m['id']=='baby_cultivate_scrap_shop_final')
+        self.assertEqual(final['on_miss'],'ignore')
+
+    def test_map_inspection_has_no_start_recruit_or_abandon_entry_and_forbids_moves(self):
+        tasks,s=self.overlay('map')
+        self.assertEqual(tasks['BlackFlow@Roguelike@Begin']['next'],['BlackFlow@Roguelike@NextLevel'])
+        p=next(p for p in s['profiles'] if p['id']==COUNT_PROFILE)
+        self.assertEqual(p['failure_action'],'stop_run')
+        rule=next(m for m in s['modules'] if m['id']=='utopia_no_movement')['rules'][0]
+        self.assertEqual(rule['kind'],'forbid')
+        self.assertEqual({c['value'] for c in rule['candidate_if']['any']},{True,False})
+
+
+class NodeLoopTests(unittest.TestCase):
+    def runner(self):
+        r=Runner(Config.load(),log=lambda _:None);r.config.node_filter_enabled=True;r.config.min_effective_nodes=10
+        r.acquire_lock=Mock(return_value=Mock());r.require_theme=Mock();r.connect=Mock();r.capture=Mock();r.adb=Mock()
+        r.vision=Mock();r.vision.match.return_value=None;r.maa=Mock(return_value={})
+        r.confirm_map_difficulty=Mock();r.inspect_ideal=Mock(return_value=('present','test'))
+        return r
+
+    def test_insufficient_nodes_requires_new_preparation(self):
+        r=self.runner();r.count_effective_nodes=Mock(side_effect=[9,10])
+        self.assertEqual(r.run(),'found')
+        self.assertEqual([c.args[0] for c in r.maa.call_args_list],['prepare','abandon','formal','abandon','prepare','abandon','formal'])
+        self.assertEqual(r.inspect_ideal.call_count,1)
+
+    def test_unconfirmed_nodes_preserve_run(self):
+        r=self.runner();r.count_effective_nodes=Mock(side_effect=RuntimeError('unknown nodes'))
+        with self.assertRaises(RuntimeError):r.run()
+        self.assertEqual([c.args[0] for c in r.maa.call_args_list],['prepare','abandon','formal'])
+
+    def test_no_harvest_never_opens_formal_run(self):
+        r=self.runner();r.config.node_filter_enabled=False
+        r.maa.side_effect=[{'prepare_rejected':True},{},{},{},{}]
+        self.assertEqual(r.run(),'found')
+        self.assertEqual([c.args[0] for c in r.maa.call_args_list],['prepare','abandon','prepare','abandon','formal'])
