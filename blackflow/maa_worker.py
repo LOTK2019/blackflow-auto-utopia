@@ -36,6 +36,11 @@ def make_overlay(config, phase, folder):
         prefix + "Begin": {"next": [prefix + n for n in ("MissionFailedFlag2", "ChooseDifficulty", "StartExplore", "Continue", "StartExploreCD", "Abandon", "ExitThenAbandon", "MapPrepare-FloorEnterZoom", "NextLevel")]},
     }
     if phase in ("prepare", "formal"):
+        # 小标题旧 ROI 仅裁到“分队”的局部，部分帧 OCR 返回空串。
+        # 使用完整标题区域触发原生分队插件，不改变分队选择逻辑。
+        tasks[prefix+'Squad-EnterPoint'] = {
+            'algorithm':'OcrDetect','text':['选择分队'],'roi':[400,0,480,120],
+            'action':'DoNothing','next':[prefix+'SquadConfirm']}
         # 猫狗收益弹窗关闭后有退场动画；确认按钮位置与招募组合卡片重叠。
         # 局部等待必须保留，否则快速循环会把下一页中间卡片误点选中。
         tasks[prefix+'SquadConfirmRewardPopup'] = {'postDelay':1000,
