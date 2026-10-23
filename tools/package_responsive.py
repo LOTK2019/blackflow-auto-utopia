@@ -57,8 +57,12 @@ def package(bundle_path='dist-responsive/自动实托邦', output='release/自�
             for file in (ROOT / folder).rglob('*'):
                 if file.is_file() and '__pycache__' not in file.parts:
                     z.write(file, file.relative_to(ROOT).as_posix())
-        for file in ROOT.iterdir():
-            if file.is_file() and (file.suffix in ('.py', '.ps1', '.spec', '.md', '.txt', '.cmd') or file.name in ('LICENSE', 'config.example.json')):
+        # 只发布明确列出的项目文件，不能把根目录临时排障记录带给收件人。
+        for name in ('app.py','blackflow.spec','build-exe.ps1','setup.ps1','启动.cmd',
+                     'README.md','验证记录.md','EXE使用说明.txt','THIRD_PARTY_NOTICES.md',
+                     'LICENSE','requirements.txt','requirements-lock.txt','config.example.json'):
+            file=ROOT/name
+            if file.is_file():
                 z.write(file, file.name)
         z.writestr('config.json', (bundle / 'config.json').read_bytes())
     release = ROOT / output
