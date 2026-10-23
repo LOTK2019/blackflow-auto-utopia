@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 from blackflow.config import Config
 from blackflow.maa_worker import make_overlay
-from blackflow.nodes import effective_nodes
+from blackflow.nodes import effective_nodes, reconcile_node_maps
 from blackflow.runner import Runner
 from blackflow.strategy import SEED_PROFILE, COUNT_PROFILE, optional_seed_completion, seed_action_point_rules
 
@@ -18,6 +18,53 @@ def snapshot(types, **extra):
 
 
 class NodeCountTests(unittest.TestCase):
+    def reported_jitter(self):
+        data=json.loads((Path(__file__).parent/'fixtures/node-count-jitter.json').read_text(encoding='utf-8'))
+        templates=json.loads((Path(Config.load().maa_dir)/'resource/roguelike/BlackFlow/map_templates.json').read_text(encoding='utf-8'))['templates']
+        return data['observations'],templates
+
+    def test_real_jitter_recovers_eight_nodes_without_treating_unknown_as_empty(self):
+        groups,templates=self.reported_jitter()
+        self.assertIsNone(reconcile_node_maps(groups[:2],templates))
+        result=reconcile_node_maps(groups[:3],templates)
+        self.assertEqual((result['effective'],result['empty'],result['total']),(8,3,11))
+        self.assertEqual(result['ignored_unclassified_positions'],[(0,4)])
+        self.assertTrue(all(n['observations']>=2 for n in result['node_votes']))
+
+    def test_single_worker_cannot_supply_two_votes(self):
+        groups,templates=self.reported_jitter()
+        self.assertIsNone(reconcile_node_maps([groups[1]*4],templates))
+
+    def test_unrecognized_real_node_and_binary_conflicts_still_stop(self):
+        groups,templates=self.reported_jitter()
+        # 留一份完整锚点，但真实节点其余轮都未知，不能借模板猜类型。
+        for group in (groups[0],groups[2],groups[3]):
+            for s in group:
+                n=next(n for n in s['nodes'] if (n['row'],n['column'])==(1,2))
+                n.update(type='unclassified',identity_state='unclassified')
+        self.assertIsNone(reconcile_node_maps(groups,templates))
+        groups,templates=self.reported_jitter()
+        for s in groups[3]:
+            n=next(n for n in s['nodes'] if (n['row'],n['column'])==(1,2))
+            n.update(type='empty',identity_state='classified')
+        self.assertIsNone(reconcile_node_maps(groups,templates))
+
+    def test_unknown_topology_does_not_drop_unclassified_positions(self):
+        groups,templates=self.reported_jitter()
+        self.assertIsNone(reconcile_node_maps(groups,[]))
+        for group in groups:
+            for s in group:
+                s['current_node']=s['nodes'][0]['id']
+        self.assertIsNone(reconcile_node_maps(groups,templates))
+
+    def test_runner_replays_real_failed_session_with_no_game_input(self):
+        groups,_=self.reported_jitter()
+        r=Runner(Config.load(),log=lambda _:None);r.capture=Mock();r.adb=Mock()
+        r.maa=Mock(side_effect=[{'node_maps':g} for g in groups])
+        self.assertEqual(r.count_effective_nodes(),8)
+        self.assertEqual(r.maa.call_count,3)
+        r.adb.tap.assert_not_called()
+
     def test_counts_every_nonempty_node_including_hidden_nodes(self):
         data=snapshot(['empty','shop','scrap_shop','incident','hide_invisible','final','empty'])
         result=effective_nodes(data)

@@ -12,7 +12,20 @@ if __name__ == "__main__":
         sys.stderr = sys.stdout
     try:
         import app
-        if "--image-check" in sys.argv:
+        if "--node-check" in sys.argv:
+            from pathlib import Path
+            from blackflow.config import Config
+            from blackflow.nodes import reconcile_node_maps
+            recorded = Path(sys.argv[sys.argv.index('--node-check') + 1])
+            config = Config.load()
+            observations = json.loads(recorded.read_text(encoding='utf-8'))['observations']
+            templates = json.loads((Path(config.maa_dir)/'resource/roguelike/BlackFlow/map_templates.json').read_text(encoding='utf-8'))['templates']
+            result = reconcile_node_maps(observations, templates)
+            if result is None:
+                raise RuntimeError('离线节点记录证据不足，未确认数量')
+            (ROOT/'节点回放检查.json').write_text(json.dumps(
+                {'source': 'recorded-node-snapshots', 'result': result}, ensure_ascii=False, indent=2), encoding='utf-8')
+        elif "--image-check" in sys.argv:
             from blackflow.config import Config
             from blackflow.runner import Runner
             from blackflow.adb import load_image
@@ -56,7 +69,7 @@ if __name__ == "__main__":
             app.main()
     except Exception:
         traceback.print_exc()
-        if any(flag in sys.argv for flag in ('--diagnose','--run','--phase','--ui-check','--image-check','--package-check')):
+        if any(flag in sys.argv for flag in ('--diagnose','--run','--phase','--ui-check','--image-check','--package-check','--node-check')):
             # 无控制台版本的命令行诊断必须非零退出，不能卡在 bootloader
             # 的未处理异常弹窗；原异常及错误现场已经保存在用户数据目录。
             raise SystemExit(1)

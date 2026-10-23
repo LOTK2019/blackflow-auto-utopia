@@ -1,0 +1,2048 @@
+{
+  "expected_effective": 8,
+  "expected_empty": 3,
+  "observations": [
+    [
+      {
+        "accepted_observation_id": "BF-O1",
+        "attempt_count": 1,
+        "columns": 5,
+        "confirmed_edge_count": 11,
+        "current_node": 281475010265090,
+        "edges": [
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999903,
+            "second": 281474976710660
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999993,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710660,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999924,
+            "second": 281474976710662
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710662,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999998,
+            "second": 281475010265094
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265088,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999941,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999999,
+            "second": 281475010265092
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 1.0,
+            "second": 281475043819522
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999995,
+            "second": 281475010265096
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999998,
+            "second": 281475043819526
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819522,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999983,
+            "second": 281475043819524
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819524,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999995,
+            "second": 281475043819526
+          }
+        ],
+        "floor": 1,
+        "floor_from_ocr": true,
+        "forced_edge_count": 0,
+        "map_revision": 1,
+        "node_count": 11,
+        "nodes": [
+          {
+            "column": 1,
+            "id": 281474976710658,
+            "identity_revealed": false,
+            "identity_state": "unclassified",
+            "name": "",
+            "progress": "active",
+            "row": 0,
+            "type": "unclassified"
+          },
+          {
+            "column": 2,
+            "id": 281474976710660,
+            "identity_revealed": false,
+            "identity_state": "hidden",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 0,
+            "type": "hide_invisible"
+          },
+          {
+            "column": 3,
+            "id": 281474976710662,
+            "identity_revealed": false,
+            "identity_state": "hidden",
+            "name": "未知的凶戾",
+            "progress": "active",
+            "row": 0,
+            "type": "hide_battle"
+          },
+          {
+            "column": 0,
+            "id": 281475010265088,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 1,
+            "type": "battle_normal"
+          },
+          {
+            "column": 1,
+            "id": 281475010265090,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 1,
+            "type": "empty"
+          },
+          {
+            "column": 2,
+            "id": 281475010265092,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 1,
+            "type": "battle_normal"
+          },
+          {
+            "column": 3,
+            "id": 281475010265094,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 1,
+            "type": "shop"
+          },
+          {
+            "column": 4,
+            "id": 281475010265096,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "险路尽头",
+            "progress": "active",
+            "row": 1,
+            "type": "final"
+          },
+          {
+            "column": 1,
+            "id": 281475043819522,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 2,
+            "type": "battle_normal"
+          },
+          {
+            "column": 2,
+            "id": 281475043819524,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "empty"
+          },
+          {
+            "column": 3,
+            "id": 281475043819526,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "empty"
+          }
+        ],
+        "observation_id": "BF-O1",
+        "recognition_attempt_count": 1,
+        "recognition_attempt_id": "BF-O1",
+        "recognition_floor": 1,
+        "recognition_floor_source": "next_level_ocr",
+        "recognition_retry_count": 0,
+        "recognition_screenshot_us": 323128,
+        "recognition_us": 1447587,
+        "retry_count": 0,
+        "rows": 3,
+        "run_revision": 1,
+        "screenshot_us": 323128,
+        "source": "recognition",
+        "supplemented_exits": [
+          [
+            1,
+            4
+          ]
+        ],
+        "trigger": "routine_observation",
+        "unclassified_count": 1
+      },
+      {
+        "accepted_observation_id": "BF-O2",
+        "attempt_count": 1,
+        "columns": 5,
+        "confirmed_edge_count": 12,
+        "current_node": 281475010265090,
+        "edges": [
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999997,
+            "second": 281474976710660
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999996,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710660,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999996,
+            "second": 281474976710662
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710662,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.92149,
+            "second": 281474976710664
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710662,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999989,
+            "second": 281475010265094
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265088,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999947,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999996,
+            "second": 281475010265092
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999995,
+            "second": 281475043819522
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999994,
+            "second": 281475010265096
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.99999,
+            "second": 281475043819526
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819522,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 1.0,
+            "second": 281475043819524
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819524,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999997,
+            "second": 281475043819526
+          }
+        ],
+        "floor": 1,
+        "floor_from_ocr": true,
+        "forced_edge_count": 0,
+        "map_revision": 2,
+        "node_count": 12,
+        "nodes": [
+          {
+            "column": 1,
+            "id": 281474976710658,
+            "identity_revealed": false,
+            "identity_state": "unclassified",
+            "name": "",
+            "progress": "active",
+            "row": 0,
+            "type": "unclassified"
+          },
+          {
+            "column": 2,
+            "id": 281474976710660,
+            "identity_revealed": false,
+            "identity_state": "hidden",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 0,
+            "type": "hide_invisible"
+          },
+          {
+            "column": 3,
+            "id": 281474976710662,
+            "identity_revealed": false,
+            "identity_state": "unclassified",
+            "name": "",
+            "progress": "active",
+            "row": 0,
+            "type": "unclassified"
+          },
+          {
+            "column": 4,
+            "id": 281474976710664,
+            "identity_revealed": false,
+            "identity_state": "unclassified",
+            "name": "",
+            "progress": "active",
+            "row": 0,
+            "type": "unclassified"
+          },
+          {
+            "column": 0,
+            "id": 281475010265088,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 1,
+            "type": "battle_normal"
+          },
+          {
+            "column": 1,
+            "id": 281475010265090,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 1,
+            "type": "empty"
+          },
+          {
+            "column": 2,
+            "id": 281475010265092,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 1,
+            "type": "battle_normal"
+          },
+          {
+            "column": 3,
+            "id": 281475010265094,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 1,
+            "type": "shop"
+          },
+          {
+            "column": 4,
+            "id": 281475010265096,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "险路尽头",
+            "progress": "active",
+            "row": 1,
+            "type": "final"
+          },
+          {
+            "column": 1,
+            "id": 281475043819522,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 2,
+            "type": "battle_normal"
+          },
+          {
+            "column": 2,
+            "id": 281475043819524,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "empty"
+          },
+          {
+            "column": 3,
+            "id": 281475043819526,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "empty"
+          }
+        ],
+        "observation_id": "BF-O2",
+        "recognition_attempt_count": 1,
+        "recognition_attempt_id": "BF-O2",
+        "recognition_floor": 1,
+        "recognition_floor_source": "next_level_ocr",
+        "recognition_retry_count": 0,
+        "recognition_screenshot_us": 449276,
+        "recognition_us": 1314400,
+        "retry_count": 0,
+        "rows": 3,
+        "run_revision": 1,
+        "screenshot_us": 449276,
+        "source": "recognition",
+        "supplemented_exits": [
+          [
+            1,
+            4
+          ]
+        ],
+        "trigger": "routine_observation",
+        "unclassified_count": 3
+      }
+    ],
+    [
+      {
+        "accepted_observation_id": "BF-O1",
+        "attempt_count": 1,
+        "columns": 5,
+        "confirmed_edge_count": 11,
+        "current_node": 281475010265090,
+        "edges": [
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999995,
+            "second": 281474976710660
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999994,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710660,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999992,
+            "second": 281474976710662
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710662,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999883,
+            "second": 281475010265094
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265088,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999998,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999998,
+            "second": 281475010265092
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999998,
+            "second": 281475043819522
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999982,
+            "second": 281475010265096
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999936,
+            "second": 281475043819526
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819522,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999977,
+            "second": 281475043819524
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819524,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999992,
+            "second": 281475043819526
+          }
+        ],
+        "floor": 1,
+        "floor_from_ocr": true,
+        "forced_edge_count": 0,
+        "map_revision": 1,
+        "node_count": 11,
+        "nodes": [
+          {
+            "column": 1,
+            "id": 281474976710658,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 0,
+            "type": "battle_normal"
+          },
+          {
+            "column": 2,
+            "id": 281474976710660,
+            "identity_revealed": false,
+            "identity_state": "hidden",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 0,
+            "type": "hide_invisible"
+          },
+          {
+            "column": 3,
+            "id": 281474976710662,
+            "identity_revealed": false,
+            "identity_state": "hidden",
+            "name": "未知的凶戾",
+            "progress": "active",
+            "row": 0,
+            "type": "hide_battle"
+          },
+          {
+            "column": 0,
+            "id": 281475010265088,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 1,
+            "type": "battle_normal"
+          },
+          {
+            "column": 1,
+            "id": 281475010265090,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 1,
+            "type": "empty"
+          },
+          {
+            "column": 2,
+            "id": 281475010265092,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 1,
+            "type": "battle_normal"
+          },
+          {
+            "column": 3,
+            "id": 281475010265094,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 1,
+            "type": "shop"
+          },
+          {
+            "column": 4,
+            "id": 281475010265096,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "险路尽头",
+            "progress": "active",
+            "row": 1,
+            "type": "final"
+          },
+          {
+            "column": 1,
+            "id": 281475043819522,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 2,
+            "type": "battle_normal"
+          },
+          {
+            "column": 2,
+            "id": 281475043819524,
+            "identity_revealed": false,
+            "identity_state": "unclassified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "unclassified"
+          },
+          {
+            "column": 3,
+            "id": 281475043819526,
+            "identity_revealed": false,
+            "identity_state": "unclassified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "unclassified"
+          }
+        ],
+        "observation_id": "BF-O1",
+        "recognition_attempt_count": 1,
+        "recognition_attempt_id": "BF-O1",
+        "recognition_floor": 1,
+        "recognition_floor_source": "next_level_ocr",
+        "recognition_retry_count": 0,
+        "recognition_screenshot_us": 326101,
+        "recognition_us": 1418886,
+        "retry_count": 0,
+        "rows": 3,
+        "run_revision": 1,
+        "screenshot_us": 326101,
+        "source": "recognition",
+        "supplemented_exits": [
+          [
+            1,
+            4
+          ]
+        ],
+        "trigger": "routine_observation",
+        "unclassified_count": 2
+      },
+      {
+        "accepted_observation_id": "BF-O2",
+        "attempt_count": 1,
+        "columns": 5,
+        "confirmed_edge_count": 11,
+        "current_node": 281475010265090,
+        "edges": [
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999999,
+            "second": 281474976710660
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999994,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710660,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999999,
+            "second": 281474976710662
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710662,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999998,
+            "second": 281475010265094
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265088,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999996,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999999,
+            "second": 281475010265092
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999985,
+            "second": 281475043819522
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999993,
+            "second": 281475010265096
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999999,
+            "second": 281475043819526
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819522,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999992,
+            "second": 281475043819524
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819524,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999998,
+            "second": 281475043819526
+          }
+        ],
+        "floor": 1,
+        "floor_from_ocr": true,
+        "forced_edge_count": 0,
+        "map_revision": 2,
+        "node_count": 11,
+        "nodes": [
+          {
+            "column": 1,
+            "id": 281474976710658,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 0,
+            "type": "battle_normal"
+          },
+          {
+            "column": 2,
+            "id": 281474976710660,
+            "identity_revealed": false,
+            "identity_state": "hidden",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 0,
+            "type": "hide_invisible"
+          },
+          {
+            "column": 3,
+            "id": 281474976710662,
+            "identity_revealed": false,
+            "identity_state": "hidden",
+            "name": "未知的凶戾",
+            "progress": "active",
+            "row": 0,
+            "type": "hide_battle"
+          },
+          {
+            "column": 0,
+            "id": 281475010265088,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 1,
+            "type": "battle_normal"
+          },
+          {
+            "column": 1,
+            "id": 281475010265090,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 1,
+            "type": "empty"
+          },
+          {
+            "column": 2,
+            "id": 281475010265092,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 1,
+            "type": "battle_normal"
+          },
+          {
+            "column": 3,
+            "id": 281475010265094,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 1,
+            "type": "shop"
+          },
+          {
+            "column": 4,
+            "id": 281475010265096,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "险路尽头",
+            "progress": "active",
+            "row": 1,
+            "type": "final"
+          },
+          {
+            "column": 1,
+            "id": 281475043819522,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 2,
+            "type": "battle_normal"
+          },
+          {
+            "column": 2,
+            "id": 281475043819524,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "empty"
+          },
+          {
+            "column": 3,
+            "id": 281475043819526,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "empty"
+          }
+        ],
+        "observation_id": "BF-O2",
+        "recognition_attempt_count": 1,
+        "recognition_attempt_id": "BF-O2",
+        "recognition_floor": 1,
+        "recognition_floor_source": "next_level_ocr",
+        "recognition_retry_count": 0,
+        "recognition_screenshot_us": 339199,
+        "recognition_us": 1383951,
+        "retry_count": 0,
+        "rows": 3,
+        "run_revision": 1,
+        "screenshot_us": 339199,
+        "source": "recognition",
+        "supplemented_exits": [
+          [
+            1,
+            4
+          ]
+        ],
+        "trigger": "routine_observation",
+        "unclassified_count": 0
+      }
+    ],
+    [
+      {
+        "accepted_observation_id": "BF-O1",
+        "attempt_count": 1,
+        "columns": 5,
+        "confirmed_edge_count": 12,
+        "current_node": 281475010265090,
+        "edges": [
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 1.0,
+            "second": 281474976710660
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999986,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710660,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 1.0,
+            "second": 281474976710662
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710662,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.924954,
+            "second": 281474976710664
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710662,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999971,
+            "second": 281475010265094
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265088,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999991,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 1.0,
+            "second": 281475010265092
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999992,
+            "second": 281475043819522
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999988,
+            "second": 281475010265096
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999997,
+            "second": 281475043819526
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819522,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999988,
+            "second": 281475043819524
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819524,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999999,
+            "second": 281475043819526
+          }
+        ],
+        "floor": 1,
+        "floor_from_ocr": true,
+        "forced_edge_count": 0,
+        "map_revision": 1,
+        "node_count": 12,
+        "nodes": [
+          {
+            "column": 1,
+            "id": 281474976710658,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 0,
+            "type": "battle_normal"
+          },
+          {
+            "column": 2,
+            "id": 281474976710660,
+            "identity_revealed": false,
+            "identity_state": "hidden",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 0,
+            "type": "hide_invisible"
+          },
+          {
+            "column": 3,
+            "id": 281474976710662,
+            "identity_revealed": false,
+            "identity_state": "hidden",
+            "name": "未知的凶戾",
+            "progress": "active",
+            "row": 0,
+            "type": "hide_battle"
+          },
+          {
+            "column": 4,
+            "id": 281474976710664,
+            "identity_revealed": false,
+            "identity_state": "unclassified",
+            "name": "",
+            "progress": "active",
+            "row": 0,
+            "type": "unclassified"
+          },
+          {
+            "column": 0,
+            "id": 281475010265088,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 1,
+            "type": "battle_normal"
+          },
+          {
+            "column": 1,
+            "id": 281475010265090,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 1,
+            "type": "empty"
+          },
+          {
+            "column": 2,
+            "id": 281475010265092,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 1,
+            "type": "battle_normal"
+          },
+          {
+            "column": 3,
+            "id": 281475010265094,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 1,
+            "type": "shop"
+          },
+          {
+            "column": 4,
+            "id": 281475010265096,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "险路尽头",
+            "progress": "active",
+            "row": 1,
+            "type": "final"
+          },
+          {
+            "column": 1,
+            "id": 281475043819522,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 2,
+            "type": "battle_normal"
+          },
+          {
+            "column": 2,
+            "id": 281475043819524,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "empty"
+          },
+          {
+            "column": 3,
+            "id": 281475043819526,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "empty"
+          }
+        ],
+        "observation_id": "BF-O1",
+        "recognition_attempt_count": 1,
+        "recognition_attempt_id": "BF-O1",
+        "recognition_floor": 1,
+        "recognition_floor_source": "next_level_ocr",
+        "recognition_retry_count": 0,
+        "recognition_screenshot_us": 381763,
+        "recognition_us": 1432259,
+        "retry_count": 0,
+        "rows": 3,
+        "run_revision": 1,
+        "screenshot_us": 381763,
+        "source": "recognition",
+        "supplemented_exits": [],
+        "trigger": "routine_observation",
+        "unclassified_count": 1
+      },
+      {
+        "accepted_observation_id": "BF-O2",
+        "attempt_count": 1,
+        "columns": 5,
+        "confirmed_edge_count": 12,
+        "current_node": 281475010265090,
+        "edges": [
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999995,
+            "second": 281474976710660
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999998,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710660,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999998,
+            "second": 281474976710662
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710662,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.983265,
+            "second": 281474976710664
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710662,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999953,
+            "second": 281475010265094
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265088,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999969,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999999,
+            "second": 281475010265092
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 1.0,
+            "second": 281475043819522
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999825,
+            "second": 281475010265096
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999996,
+            "second": 281475043819526
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819522,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999983,
+            "second": 281475043819524
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819524,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 1.0,
+            "second": 281475043819526
+          }
+        ],
+        "floor": 1,
+        "floor_from_ocr": true,
+        "forced_edge_count": 0,
+        "map_revision": 2,
+        "node_count": 12,
+        "nodes": [
+          {
+            "column": 1,
+            "id": 281474976710658,
+            "identity_revealed": false,
+            "identity_state": "unclassified",
+            "name": "",
+            "progress": "active",
+            "row": 0,
+            "type": "unclassified"
+          },
+          {
+            "column": 2,
+            "id": 281474976710660,
+            "identity_revealed": false,
+            "identity_state": "hidden",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 0,
+            "type": "hide_invisible"
+          },
+          {
+            "column": 3,
+            "id": 281474976710662,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 0,
+            "type": "empty"
+          },
+          {
+            "column": 4,
+            "id": 281474976710664,
+            "identity_revealed": false,
+            "identity_state": "unclassified",
+            "name": "",
+            "progress": "active",
+            "row": 0,
+            "type": "unclassified"
+          },
+          {
+            "column": 0,
+            "id": 281475010265088,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 1,
+            "type": "battle_normal"
+          },
+          {
+            "column": 1,
+            "id": 281475010265090,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 1,
+            "type": "empty"
+          },
+          {
+            "column": 2,
+            "id": 281475010265092,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 1,
+            "type": "battle_normal"
+          },
+          {
+            "column": 3,
+            "id": 281475010265094,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 1,
+            "type": "shop"
+          },
+          {
+            "column": 4,
+            "id": 281475010265096,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "险路尽头",
+            "progress": "active",
+            "row": 1,
+            "type": "final"
+          },
+          {
+            "column": 1,
+            "id": 281475043819522,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 2,
+            "type": "battle_normal"
+          },
+          {
+            "column": 2,
+            "id": 281475043819524,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "empty"
+          },
+          {
+            "column": 3,
+            "id": 281475043819526,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "empty"
+          }
+        ],
+        "observation_id": "BF-O2",
+        "recognition_attempt_count": 1,
+        "recognition_attempt_id": "BF-O2",
+        "recognition_floor": 1,
+        "recognition_floor_source": "next_level_ocr",
+        "recognition_retry_count": 0,
+        "recognition_screenshot_us": 351341,
+        "recognition_us": 1378551,
+        "retry_count": 0,
+        "rows": 3,
+        "run_revision": 1,
+        "screenshot_us": 351341,
+        "source": "recognition",
+        "supplemented_exits": [],
+        "trigger": "routine_observation",
+        "unclassified_count": 2
+      }
+    ],
+    [
+      {
+        "accepted_observation_id": "BF-O1",
+        "attempt_count": 1,
+        "columns": 5,
+        "confirmed_edge_count": 11,
+        "current_node": 281475010265090,
+        "edges": [
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999996,
+            "second": 281474976710660
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 1.0,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710660,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999965,
+            "second": 281474976710662
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710662,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.99992,
+            "second": 281475010265094
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265088,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999938,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999997,
+            "second": 281475010265092
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999998,
+            "second": 281475043819522
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999993,
+            "second": 281475010265096
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999952,
+            "second": 281475043819526
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819522,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999997,
+            "second": 281475043819524
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819524,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999977,
+            "second": 281475043819526
+          }
+        ],
+        "floor": 1,
+        "floor_from_ocr": true,
+        "forced_edge_count": 0,
+        "map_revision": 1,
+        "node_count": 11,
+        "nodes": [
+          {
+            "column": 1,
+            "id": 281474976710658,
+            "identity_revealed": false,
+            "identity_state": "unclassified",
+            "name": "",
+            "progress": "active",
+            "row": 0,
+            "type": "unclassified"
+          },
+          {
+            "column": 2,
+            "id": 281474976710660,
+            "identity_revealed": false,
+            "identity_state": "hidden",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 0,
+            "type": "hide_invisible"
+          },
+          {
+            "column": 3,
+            "id": 281474976710662,
+            "identity_revealed": false,
+            "identity_state": "unclassified",
+            "name": "",
+            "progress": "active",
+            "row": 0,
+            "type": "unclassified"
+          },
+          {
+            "column": 0,
+            "id": 281475010265088,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 1,
+            "type": "battle_normal"
+          },
+          {
+            "column": 1,
+            "id": 281475010265090,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 1,
+            "type": "empty"
+          },
+          {
+            "column": 2,
+            "id": 281475010265092,
+            "identity_revealed": false,
+            "identity_state": "unclassified",
+            "name": "",
+            "progress": "active",
+            "row": 1,
+            "type": "unclassified"
+          },
+          {
+            "column": 3,
+            "id": 281475010265094,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 1,
+            "type": "shop"
+          },
+          {
+            "column": 4,
+            "id": 281475010265096,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "险路尽头",
+            "progress": "active",
+            "row": 1,
+            "type": "final"
+          },
+          {
+            "column": 1,
+            "id": 281475043819522,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 2,
+            "type": "battle_normal"
+          },
+          {
+            "column": 2,
+            "id": 281475043819524,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "empty"
+          },
+          {
+            "column": 3,
+            "id": 281475043819526,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "empty"
+          }
+        ],
+        "observation_id": "BF-O1",
+        "recognition_attempt_count": 1,
+        "recognition_attempt_id": "BF-O1",
+        "recognition_floor": 1,
+        "recognition_floor_source": "next_level_ocr",
+        "recognition_retry_count": 0,
+        "recognition_screenshot_us": 444789,
+        "recognition_us": 585611,
+        "retry_count": 0,
+        "rows": 3,
+        "run_revision": 1,
+        "screenshot_us": 444789,
+        "source": "recognition",
+        "supplemented_exits": [
+          [
+            1,
+            4
+          ]
+        ],
+        "trigger": "routine_observation",
+        "unclassified_count": 3
+      },
+      {
+        "accepted_observation_id": "BF-O2",
+        "attempt_count": 1,
+        "columns": 5,
+        "confirmed_edge_count": 12,
+        "current_node": 281475010265090,
+        "edges": [
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999998,
+            "second": 281474976710660
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710658,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999998,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710660,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999996,
+            "second": 281474976710662
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710662,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.975713,
+            "second": 281474976710664
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281474976710662,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999997,
+            "second": 281475010265094
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265088,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999978,
+            "second": 281475010265090
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999996,
+            "second": 281475010265092
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265090,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999981,
+            "second": 281475043819522
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999977,
+            "second": 281475010265096
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475010265094,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999998,
+            "second": 281475043819526
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819522,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999998,
+            "second": 281475043819524
+          },
+          {
+            "cnn_connected": true,
+            "decision_source": "cnn_threshold",
+            "first": 281475043819524,
+            "forced_by_connectivity_constraint": false,
+            "knowledge": "confirmed",
+            "probability": 0.999997,
+            "second": 281475043819526
+          }
+        ],
+        "floor": 1,
+        "floor_from_ocr": true,
+        "forced_edge_count": 0,
+        "map_revision": 2,
+        "node_count": 12,
+        "nodes": [
+          {
+            "column": 1,
+            "id": 281474976710658,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 0,
+            "type": "battle_normal"
+          },
+          {
+            "column": 2,
+            "id": 281474976710660,
+            "identity_revealed": false,
+            "identity_state": "hidden",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 0,
+            "type": "hide_invisible"
+          },
+          {
+            "column": 3,
+            "id": 281474976710662,
+            "identity_revealed": false,
+            "identity_state": "hidden",
+            "name": "未知的凶戾",
+            "progress": "active",
+            "row": 0,
+            "type": "hide_battle"
+          },
+          {
+            "column": 4,
+            "id": 281474976710664,
+            "identity_revealed": false,
+            "identity_state": "unclassified",
+            "name": "",
+            "progress": "active",
+            "row": 0,
+            "type": "unclassified"
+          },
+          {
+            "column": 0,
+            "id": 281475010265088,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 1,
+            "type": "battle_normal"
+          },
+          {
+            "column": 1,
+            "id": 281475010265090,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 1,
+            "type": "empty"
+          },
+          {
+            "column": 2,
+            "id": 281475010265092,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 1,
+            "type": "battle_normal"
+          },
+          {
+            "column": 3,
+            "id": 281475010265094,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "未知的诡秘",
+            "progress": "active",
+            "row": 1,
+            "type": "shop"
+          },
+          {
+            "column": 4,
+            "id": 281475010265096,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "险路尽头",
+            "progress": "active",
+            "row": 1,
+            "type": "final"
+          },
+          {
+            "column": 1,
+            "id": 281475043819522,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "作战",
+            "progress": "active",
+            "row": 2,
+            "type": "battle_normal"
+          },
+          {
+            "column": 2,
+            "id": 281475043819524,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "empty"
+          },
+          {
+            "column": 3,
+            "id": 281475043819526,
+            "identity_revealed": true,
+            "identity_state": "classified",
+            "name": "",
+            "progress": "active",
+            "row": 2,
+            "type": "empty"
+          }
+        ],
+        "observation_id": "BF-O2",
+        "recognition_attempt_count": 1,
+        "recognition_attempt_id": "BF-O2",
+        "recognition_floor": 1,
+        "recognition_floor_source": "next_level_ocr",
+        "recognition_retry_count": 0,
+        "recognition_screenshot_us": 323363,
+        "recognition_us": 573908,
+        "retry_count": 0,
+        "rows": 3,
+        "run_revision": 1,
+        "screenshot_us": 323363,
+        "source": "recognition",
+        "supplemented_exits": [
+          [
+            1,
+            4
+          ]
+        ],
+        "trigger": "routine_observation",
+        "unclassified_count": 1
+      }
+    ]
+  ]
+}

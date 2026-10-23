@@ -16,7 +16,7 @@ from .config import ROOT, RESOURCE_ROOT, APP_ROOT
 from .errors import describe_error, error_event
 from .progress import WorkerProgress
 from .recovery import ReadPolicy, ReadExhausted, read_with_recovery
-from .nodes import effective_nodes
+from .nodes import effective_nodes, reconcile_node_maps
 from .animals import animals_satisfy, harvest_animals_from_ocr
 from .discovery import discover
 from .vision import Vision, ideal_from_text, header_ideal, IDEAL_ROI
@@ -363,12 +363,16 @@ class Runner:
 
     def count_effective_nodes(self):
         previous = None
+        observations = []
+        template_file = Path(self.config.maa_dir) / 'resource/roguelike/BlackFlow/map_templates.json'
+        templates = json.loads(template_file.read_text(encoding='utf-8')).get('templates', []) if template_file.is_file() else []
         # 分别重建地图；不同 worker 的新截图/快照确认一致才接受，不复用过期诊断文件。
         for attempt in range(4):
             if attempt:
                 self.adb.wait(.5)
             self.capture(f'nodes-{attempt}')
             evidence = self.maa('map')
+            observations.append(evidence['node_maps'])
             valid = []
             for snapshot in evidence['node_maps']:
                 try:
@@ -376,8 +380,12 @@ class Runner:
                 except ValueError as exc:
                     self.log('节点统计需重扫：'+str(exc))
             current = valid[-1] if valid else None
+            consensus = reconcile_node_maps(observations, templates)
             (self.session/f'{self.cycle:03d}-nodes-{attempt}.json').write_text(
-                json.dumps({'maps':evidence['node_maps'],'accepted':current},ensure_ascii=False,indent=2),encoding='utf-8')
+                json.dumps({'maps':evidence['node_maps'],'accepted':current,'consensus':consensus},ensure_ascii=False,indent=2),encoding='utf-8')
+            if consensus:
+                self.log(f"第一层有效节点 {consensus['effective']}（空地 {consensus['empty']}，总节点 {consensus['total']}；逐位置跨轮复核）")
+                return consensus['effective']
             if current and previous and (current['effective'],current['empty'],current['types']) == (previous['effective'],previous['empty'],previous['types']):
                 self.log(f"第一层有效节点 {current['effective']}（空地 {current['empty']}，总节点 {current['total']}）")
                 return current['effective']
