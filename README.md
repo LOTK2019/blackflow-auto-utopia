@@ -6,7 +6,7 @@ MuMu / ADB 桌面脚本，复用 MAA 的开局、干员招募、种植、投资�
 
 **下载：** [最新 Windows 独立版](https://github.com/LOTK2019/blackflow-auto-utopia/releases/latest)。下载 Release 中的完整 Windows ZIP，不要把 GitHub 自动生成的 Source code ZIP 当作可执行版本。完整解压后运行 `自动实托邦.exe`，不要只复制 EXE。
 
-**v0.1.1：** [完整包与覆盖补丁](https://github.com/LOTK2019/blackflow-auto-utopia/releases/tag/v0.1.1)。新用户下载完整包；已有 v0.1.0 或 rc.1/rc.2 的用户可关闭主程序及后台 worker 后覆盖补丁。包含奖励 Top N 筛选、羽蛇四列确认范围、零动物收获判断、加载恢复、分队标题及小径安全选项修正。天马蓝卡单次选择已实机通过；各项验证范围见“验证记录.md”。
+**v0.1.2：** [完整包与覆盖补丁](https://github.com/LOTK2019/blackflow-auto-utopia/releases/tag/v0.1.2)。新用户下载完整包；已有 v0.1.0、rc.1/rc.2 或 v0.1.1 的用户可关闭主程序及后台 worker 后覆盖补丁。修复节点统计因偶发未分类和额外候选而停止的问题，以完整地图和已知拓扑为锚点逐位置跨轮复核；未知布局或证据冲突仍保留现场。包含 v0.1.1 的奖励 Top N、羽蛇确认及加载恢复等修正。96项测试及冻结EXE离线回放通过，没有为本次更新重新烧水；各项验证范围见“验证记录.md”。
 
 ## 启动
 
