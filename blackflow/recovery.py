@@ -64,6 +64,15 @@ def install_native_recovery(tasks, maa_dir, phase):
     def patch(name, **values):
         tasks[name] = {**tasks.get(name, {}), **values}
 
+    # 开始探索后网络加载可能超过原生的约30秒扫描预算。只等待并识别
+    # 已到达的页面，不在提交反馈期间再次点击开始或重新选择难度。
+    tasks[r+'StartWait'] = {
+        'algorithm':'JustReturn','action':'DoNothing','preDelay':2000,
+        'maxTimes':30,'exceededNext':[r+'Exhausted'],
+        'next':[p+'Squad-EnterPoint',p+'InitialDrop',p+'ChooseDifficulty',r+'StartWait']}
+    for name in (p+'StartExplore',p+'StartExplore-EnterCheck'):
+        patch(name,onErrorNext=[r+'StartWait'])
+
     targets = [r+'Recruit', r+'Floor']
     if phase == 'prepare':
         targets.insert(0, r+'Event')

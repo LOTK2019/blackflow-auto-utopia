@@ -93,6 +93,19 @@ class NativeRecoveryTests(unittest.TestCase):
     def test_explicit_abandon_phase_does_not_get_recovery_loops(self):
         self.assertFalse(any(k.startswith('AutoUtopia@Recovery') for k in self.overlay('abandon')))
 
+    def test_start_loading_timeout_waits_without_resubmitting_start(self):
+        p='BlackFlow@Roguelike@'; r='AutoUtopia@Recovery'
+        for phase in ('prepare','formal'):
+            tasks=self.overlay(phase)
+            self.assertEqual(tasks[p+'StartExplore']['onErrorNext'],[r+'StartWait'])
+            wait=tasks[r+'StartWait']
+            self.assertEqual(wait['action'],'DoNothing')
+            self.assertEqual(wait['maxTimes'],30)
+            self.assertEqual(wait['exceededNext'],[r+'Exhausted'])
+            self.assertIn(p+'Squad-EnterPoint',wait['next'])
+            self.assertNotIn(p+'StartExplore',wait['next'])
+            self.assertNotIn(p+'StartExplore-EnterCheck',wait['next'])
+
     def test_post_exit_loading_failure_recovers_without_native_abandon(self):
         # 032-prepare: CloseEventAfterEncounter -> Stages 识别失败，原生
         # onErrorNext 直接进入 ExitThenAbandon，导致二层就清掉探索。
