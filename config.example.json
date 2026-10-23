@@ -35,6 +35,7 @@
     "巢寄生"
   ],
   "require_first_reward": false,
+  "required_reward_top_n": 0,
   "animal_counts": {
     "猫": 0,
     "狗": 0,

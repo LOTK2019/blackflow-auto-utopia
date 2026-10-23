@@ -16,7 +16,7 @@ from blackflow.adb import ADB, Stopped, save_image
 from blackflow.vision import Vision, ideal_from_text
 from blackflow.ui_layout import ScrollFrame, enable_dpi_awareness, initial_geometry, work_area
 from blackflow.strategy import PREPARE_METHODS
-from blackflow.rewards import reward_plan, REWARD_DESCRIPTIONS, DEFAULT_REWARD_ORDER
+from blackflow.rewards import reward_plan, required_rewards, REWARD_DESCRIPTIONS, DEFAULT_REWARD_ORDER
 from blackflow.animals import ANIMAL_TYPES, ANIMAL_EFFECTS
 
 
@@ -117,8 +117,12 @@ class App:
             ttk.Button(buttons,text=label,command=command).grid(row=0,column=col,sticky='ew',padx=2)
             buttons.columnconfigure(col,weight=1)
         self.vars['require_first_reward'] = tk.BooleanVar(value=strict)
-        ttk.Checkbutton(reward_box,text='必须使用第一项（未出现就重新烧水）',
-            variable=self.vars['require_first_reward']).grid(row=3,column=0,columnspan=2,sticky='w',pady=4)
+        ttk.Checkbutton(reward_box,text='必须选到排序前 N 项中的任意一项',
+            variable=self.vars['require_first_reward'],command=self.toggle_reward_requirement).grid(row=3,column=0,columnspan=2,sticky='w',pady=4)
+        self.reward_top_input=self.field(reward_box,'reward_top_n','前 N 项',
+            str(len(required_rewards(self.cfg)) or 1),[str(n) for n in range(1,13)])
+        self.toggle_reward_requirement()
+        self.note(reward_box,'N=1 表示必须第一项；多次选择至少命中一次，余下按排序选。范围内均不可选时重新烧水。',5)
         self.refresh_rewards()
         node_box = ttk.LabelFrame(left, text='第一层有效节点筛选', padding=10)
         node_box.pack(fill='x', pady=(0,10))
@@ -210,6 +214,9 @@ class App:
         self.reward_order=list(DEFAULT_REWARD_ORDER)
         self.refresh_rewards()
 
+    def toggle_reward_requirement(self):
+        self.reward_top_input.configure(state='readonly' if self.vars['require_first_reward'].get() else 'disabled')
+
     @staticmethod
     def wrap_label(label):
         label.configure(wraplength=300)
@@ -296,7 +303,8 @@ class App:
             setattr(c, key, self.vars[key].get())
         c.node_filter_enabled = self.vars['node_filter_enabled'].get()
         c.reward_priority = list(self.reward_order)
-        c.require_first_reward = self.vars['require_first_reward'].get()
+        c.required_reward_top_n = int(self.vars['reward_top_n'].get()) if self.vars['require_first_reward'].get() else 0
+        c.require_first_reward = False  # 新配置统一使用 Top N，保留旧字段仅用于导入。
         c.reward_target = '默认排序'
         c.animal_counts = {name:int(self.vars['count_'+key].get()) for key,name in (('cat','猫'),('dog','狗'),('cerberus','三头犬'))}
         if c.node_filter_enabled:

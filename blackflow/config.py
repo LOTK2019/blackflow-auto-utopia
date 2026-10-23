@@ -60,6 +60,7 @@ class Config:
     min_effective_nodes: int = 10
     reward_priority: list[str] = field(default_factory=lambda:list(DEFAULT_REWARD_ORDER))
     require_first_reward: bool = False
+    required_reward_top_n: int = 0  # 0关闭；旧版 require_first_reward=True 仍按前1项。
     animal_counts: dict[str,int] = field(default_factory=lambda:{'猫':0,'狗':0,'三头犬':0})
 
     @property
@@ -95,6 +96,8 @@ class Config:
         return {v["name"]: v for v in chars.values() if not v.get("name", "").startswith("预备干员")}
 
     def validate(self, check_strategy=True):
+        if type(self.required_reward_top_n) is not int or not 0 <= self.required_reward_top_n <= len(DEFAULT_REWARD_ORDER):
+            raise ValueError('必须命中的奖励范围须为0～12；0表示关闭')
         if set(self.animal_counts) != {'猫','狗','三头犬'} or any(type(n) is not int or not 0<=n<=3 for n in self.animal_counts.values()) or sum(self.animal_counts.values())>3:
             raise ValueError('猫、狗、三头犬的数量须为0～3，要求的总数不超过3；0表示不要求')
         if self.require_animals and self.prepare_method != '黄商店种植':

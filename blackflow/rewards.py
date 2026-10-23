@@ -19,7 +19,7 @@ REWARD_DESCRIPTIONS = {
 
 def reward_plan(config):
     order = list(config.reward_priority)
-    strict = config.require_first_reward
+    strict = config.require_first_reward or config.required_reward_top_n > 0
     # 兼容旧配置及旧版开发调用；新 UI 保存时清除旧筛选字段。
     if config.reward_target != '默认排序':
         name = config.reward_target.split('（',1)[0]
@@ -27,6 +27,15 @@ def reward_plan(config):
         order.insert(0,name)
         strict = True
     return order, strict
+
+
+def required_rewards(config):
+    order, strict = reward_plan(config)
+    if not strict:
+        return []
+    # 旧单项筛选仍保持精确要求，不受新增 Top N 影响。
+    count = 1 if config.reward_target != '默认排序' else (config.required_reward_top_n or 1)
+    return order[:count]
 
 
 def install_reward_tasks(tasks, config):
@@ -54,24 +63,28 @@ def install_reward_tasks(tasks, config):
     if not strict:
         tasks[p+'LastReward-Strategy'] = {'next':choices(order)}
     else:
-        # 先重扫三次，只有识别到其它已知卡片才判定第一项缺席。
+        # 前N项按顺序尝试，选到任意一项即可。先重扫三次，只有
+        # 识别到范围之外的已知卡片才判定本次没有可选目标。
         # 不认识的画面不会进入“目标未出现”的分支。
-        others = [n for n in order if n != order[0]]
+        required = required_rewards(config)
+        others = [n for n in order if n not in required]
         probes = []
         normal = [p+'LastReward'+NORMAL_REWARDS[n]+'.png' for n in others if n in NORMAL_REWARDS]
         for suffix, algorithm, matcher in (
             ('Normal','MatchTemplate',{'template':normal,'roi':[82,145,1116,310]}),
             ('Blue','OcrDetect',{'text':[n.removeprefix('襁褓') for n in others],
                                 'roi':REWARD_NAMES_ROI})):
+            if not matcher.get('template',matcher.get('text')):
+                continue  # 禁止空模板/空OCR目标成为无条件缺席判断。
             key='AutoUtopia@RewardMissing'+suffix
             tasks[key]={'algorithm':algorithm,**matcher,'action':'DoNothing','postDelay':1000,
                         'maxTimes':3,'next':[p+'LastReward-Strategy'],
                         'exceededNext':['AutoUtopia@RewardRejected']}
             probes.append(key)
-        tasks[p+'LastReward-Strategy']={'next':[names[order[0]],*probes]}
+        tasks[p+'LastReward-Strategy']={'next':[*choices(required),*probes]}
         tasks['AutoUtopia@RewardRejected']={'algorithm':'JustReturn','action':'DoNothing','postDelay':30000,'next':['Stop']}
     # 所有选择留在同一次 ProcessTask 中。严格检查仅在入口执行；
-    # 第一项被选中并确认后，后续页固定走普通排序，不再次要求第一项。
+    # 前N项中任意一项被确认后，后续页走普通排序，不重复要求命中。
     decision='AutoUtopia@RewardNormalDecision'
     ready=['AutoUtopia@RewardClose','AutoUtopia@RewardRolesReady',
            'AutoUtopia@RewardRecruitReady','AutoUtopia@RewardNextSelection']

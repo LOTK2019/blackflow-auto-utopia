@@ -15,7 +15,7 @@ from .errors import error_event
 from .progress import WorkerProgress
 from .recovery import install_native_recovery
 from .strategy import seed_burn_strategy, map_inspection_strategy, optional_seed_completion, SEED_PROFILE, COUNT_PROFILE
-from .rewards import install_reward_tasks, reward_plan
+from .rewards import install_reward_tasks, reward_plan, required_rewards
 
 
 def emit(kind, **data):
@@ -313,7 +313,8 @@ def run(config, phase):
                 if phase == "formal" and msg == 20001 and data.get("details", {}).get("task", "").endswith("RewardRejected"):
                     lib.AsstStop(handle)
                     reward_rejected = True
-                    emit("reward_rejected", target=reward_plan(config)[0][0])
+                    emit("reward_rejected", target=required_rewards(config),
+                         requirement='排序前'+str(len(required_rewards(config)))+'项至少选到一项')
                     break
                 if msg == 3:
                     completed = True

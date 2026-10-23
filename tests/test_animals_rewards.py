@@ -6,7 +6,7 @@ import unittest
 from blackflow.animals import animals_satisfy, animals_from_ocr, harvest_animals_from_ocr
 from blackflow.config import Config
 from blackflow.maa_worker import make_overlay
-from blackflow.rewards import DEFAULT_REWARD_ORDER, SERPENT_REWARDS, reward_plan
+from blackflow.rewards import DEFAULT_REWARD_ORDER, SERPENT_REWARDS, reward_plan, required_rewards
 
 
 class AnimalCountTests(unittest.TestCase):
@@ -55,6 +55,48 @@ class RewardPriorityTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             make_overlay(config,'formal',Path(folder))
             return json.loads((Path(folder)/'resource/tasks/tasks.json').read_text(encoding='utf-8'))
+
+    def test_top_two_accepts_second_normal_or_blue_before_missing_probes(self):
+        c=Config.load();c.reward_target='默认排序';c.require_first_reward=False
+        c.required_reward_top_n=2
+        c.reward_priority=['空间租赁','襁褓天马',*[n for n in DEFAULT_REWARD_ORDER if n not in ('空间租赁','襁褓天马')]]
+        tasks=self.tasks(c);entry=tasks['BlackFlow@Roguelike@LastReward-Strategy']['next']
+        self.assertEqual(entry[:2],['BlackFlow@Roguelike@LastReward6','AutoUtopia@Reward天马'])
+        self.assertEqual(required_rewards(c),['空间租赁','襁褓天马'])
+        for key in entry[2:]:
+            probe=tasks[key]
+            self.assertNotIn('BlackFlow@Roguelike@LastReward6.png',probe.get('template',[]))
+            self.assertNotIn('天马',probe.get('text',[]))
+        # 第二项命中也进入同一确认与后续普通排序，不再要求第一项。
+        commit=tasks[entry[1]]['next'][0]
+        next_page=tasks[commit]['next'][-1]
+        decision=tasks[next_page]['next'][0]
+        self.assertEqual(len(tasks[decision]['next']),12)
+        self.assertNotIn('BlackFlow@Roguelike@LastReward-Strategy',tasks[next_page]['next'])
+
+    def test_top_all_never_installs_empty_missing_matchers(self):
+        c=Config.load();c.reward_target='默认排序';c.require_first_reward=False;c.required_reward_top_n=12
+        tasks=self.tasks(c)
+        self.assertEqual(len(tasks['BlackFlow@Roguelike@LastReward-Strategy']['next']),12)
+        self.assertNotIn('AutoUtopia@RewardMissingNormal',tasks)
+        self.assertNotIn('AutoUtopia@RewardMissingBlue',tasks)
+
+    def test_top_n_config_roundtrip_and_legacy_single_reward(self):
+        c=Config.load();c.reward_target='默认排序';c.require_first_reward=False;c.required_reward_top_n=3
+        with tempfile.TemporaryDirectory() as folder:
+            path=Path(folder)/'config.json';c.save(path);loaded=Config.load(path)
+        self.assertEqual(required_rewards(loaded),c.reward_priority[:3])
+        c.required_reward_top_n=0
+        self.assertEqual(required_rewards(c),[])
+        c.require_first_reward=True
+        self.assertEqual(required_rewards(c),c.reward_priority[:1])
+        c.required_reward_top_n=3;c.reward_target='空间租赁（背包+2）'
+        self.assertEqual(required_rewards(c),['空间租赁'])
+
+    def test_top_n_rejects_invalid_ranges_and_noninteger_values(self):
+        for value in (-1,13,True,1.5,'2'):
+            c=Config.load();c.required_reward_top_n=value
+            with self.assertRaisesRegex(ValueError,'0～12'):c.validate()
 
     def test_all_twelve_options_and_user_reorder(self):
         c=Config.load();c.reward_target='默认排序'
