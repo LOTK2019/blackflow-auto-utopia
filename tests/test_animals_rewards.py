@@ -109,6 +109,22 @@ class RewardPriorityTests(unittest.TestCase):
         self.assertEqual(confirm['text'],['你确定要这么做'])
         self.assertEqual(confirm['action'],'ClickSelf')
 
+    def test_serpent_fourth_card_confirmation_is_inside_template_and_text_regions(self):
+        case=json.loads((Path(__file__).parent/'fixtures/serpent-four-card-confirm.json').read_text(encoding='utf-8'))
+        tasks=self.tasks(Config.load())
+        normal=tasks['BlackFlow@Roguelike@LastReward2']['next']
+        self.assertIn('AutoUtopia@RewardCommit',normal)
+        self.assertIn('AutoUtopia@RewardCommitText',normal)
+        x,y,w,h=tasks['AutoUtopia@RewardCommit']['roi']
+        tx,ty,tw,th=case['confirmation_template_rect']
+        self.assertTrue(x<=tx and y<=ty and tx+tw<=x+w and ty+th<=y+h)
+        text=tasks['AutoUtopia@RewardCommitText']
+        x,y,w,h=text['roi'];left,top,right,bottom=case['confirmation_text_box']
+        self.assertTrue(x<=left and y<=top and right<=x+w and bottom<=y+h)
+        dx,dy,rw,rh=text['rectMove'];click=(left+dx+rw/2,top+dy+rh/2)
+        bx,by,br,bb=case['check_button_box']
+        self.assertTrue(bx<=click[0]<=br and by<=click[1]<=bb)
+
     def test_selected_blue_card_is_skipped_without_resetting_priority(self):
         c=Config.load();c.require_first_reward=False;c.reward_target='默认排序'
         c.reward_priority=['襁褓天马',*filter(lambda name:name!='襁褓天马',DEFAULT_REWARD_ORDER)]

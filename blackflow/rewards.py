@@ -78,7 +78,10 @@ def install_reward_tasks(tasks, config):
     tasks[decision]={'algorithm':'JustReturn','next':choices(order)}
     # 原生动态主题任务作为 baseTask 时，模板不能依赖名称推导，否则会
     # 尝试读取不存在的 AutoUtopia@*.png。
-    tasks[commit]={'baseTask':p+'LastRewardConfirm','template':p+'LastRewardConfirm.png','postDelay':700,'next':ready}
+    # 羽蛇把奖励扩为四列时，最右确认模板会超出原生 ROI 的右边界1106。
+    # 横向覆盖全部可见卡片，不能沿用三列布局的裁剪范围。
+    tasks[commit]={'baseTask':p+'LastRewardConfirm','template':p+'LastRewardConfirm.png',
+        'roi':[1,474,1277,205],'postDelay':700,'next':ready}
     # 蓝色选中卡片的底色可能使绿色模板失配；仅在读到确认文字后，
     # 点击其正下方的勾选按钮，不依赖卡片所在列，不盲点屏幕固定位置。
     tasks[commit_text]={'algorithm':'OcrDetect','text':['你确定要这么做'],
