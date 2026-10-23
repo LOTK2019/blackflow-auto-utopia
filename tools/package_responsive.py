@@ -36,6 +36,16 @@ def package(bundle_path='dist-responsive/自动实托邦', output='release/自�
     ap_verification=ROOT/'runtime/ap-budget-verification.json'
     if ap_verification.is_file():
         shutil.copy2(ap_verification,bundle/'步数预算验证.json')
+    current_verification=ROOT/'runtime'/f'release-{version}-verification.json'
+    if current_verification.is_file():
+        shutil.copy2(current_verification,bundle/f'{version}发布验证.json')
+        details=json.loads(current_verification.read_text(encoding='utf-8'))
+        evidence=details.get('evidence_image')
+        if evidence:
+            image=(ROOT/evidence).resolve()
+            if not image.is_relative_to(ROOT.resolve()):
+                raise ValueError('验证图像必须位于项目目录内')
+            shutil.copy2(image,bundle/f'{version}-N16实托邦实测.png')
     (bundle/'版本信息.json').write_text(json.dumps({'build':build,'version':version,
         'packaged_at':datetime.now().isoformat(),'engine':manifest['version'],
         'movement_budget':'移动前硬过滤','minimum_remaining_ap':1,

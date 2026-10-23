@@ -36,11 +36,12 @@ def package_patch(base, target, output, version):
             archive.write(target/name,name)
         archive.writestr('patch-manifest.json',json.dumps(manifest,ensure_ascii=False,indent=2))
         archive.writestr('补丁使用说明.txt',
-            f'{version} 候选修正版，仅用于已完整解压的 v0.1.0。\n'
+            f'{version} 覆盖补丁，适用于已完整解压的 v0.1.0（含覆盖过rc.1/rc.2的目录）。\n'
             '请关闭程序及其后台 worker，再把本补丁解压覆盖到原来包含“自动实托邦.exe”的目录。\n'
             '不能在单独的补丁文件夹启动。未安装者先下载 v0.1.0 完整 Windows 包。\n'
             '本补丁不包含 config.json，不覆盖用户数据目录的配置与日志。\n'
-            '修改了羽蛇奖励页识别并增加报错现场 PNG/JSON。蓝卡页面尚待真实账户复测。\n'
+            '包括奖励Top N筛选、羽蛇四列确认、零动物收获判断、加载恢复、分队标题与小径安全选项修正。\n'
+            '天马蓝卡单次选择已在真实账户通过；其余回归范围与限制见随包验证记录.md。\n'
             '报错记录位于 %LOCALAPPDATA%\\BlackFlowUtopia\\artifacts\\时间目录\\errors。\n'
             '源码、AGPL许可证及第三方说明随补丁提供；MAA核心未修改，沿用v0.1.0完整包。\n')
     with zipfile.ZipFile(output) as archive:
