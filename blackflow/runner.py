@@ -17,7 +17,7 @@ from .errors import describe_error, error_event
 from .progress import WorkerProgress
 from .recovery import ReadPolicy, ReadExhausted, read_with_recovery
 from .nodes import effective_nodes
-from .animals import animals_satisfy, animals_from_ocr
+from .animals import animals_satisfy, harvest_animals_from_ocr
 from .discovery import discover
 from .vision import Vision, ideal_from_text, header_ideal, IDEAL_ROI
 
@@ -237,11 +237,13 @@ class Runner:
                         evidence['yellow_shop_visited']=True
                         self.log('已进入黄商店，开始原生出售、买种与培育流程')
                     if phase == 'prepare' and msg == 20001 and task.split('@')[-1] == 'HarvestRead':
+                        market=json.loads((Path(self.config.maa_dir)/'resource/roguelike/BlackFlow/scrap_market.json').read_text(encoding='utf-8'))
+                        known_naturals={item['name'] for item in market['scraps'] if item.get('category')=='natural'}
                         observations=[]
                         for sample in range(2):
                             frame=self.capture(f'harvest-{sample}')
                             texts=self.vision.texts(frame,(1,292,1277,99))
-                            observations.append(animals_from_ocr(texts))
+                            observations.append(harvest_animals_from_ocr(texts,known_naturals))
                             (self.session/f'{self.cycle:03d}-harvest-{sample}.json').write_text(
                                 json.dumps({'ocr':texts,'animals':observations[-1]},ensure_ascii=False,indent=2),encoding='utf-8')
                             if sample==0:self.adb.wait(.2)

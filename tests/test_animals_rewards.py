@@ -3,13 +3,30 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from blackflow.animals import animals_satisfy, animals_from_ocr
+from blackflow.animals import animals_satisfy, animals_from_ocr, harvest_animals_from_ocr
 from blackflow.config import Config
 from blackflow.maa_worker import make_overlay
 from blackflow.rewards import DEFAULT_REWARD_ORDER, SERPENT_REWARDS, reward_plan
 
 
 class AnimalCountTests(unittest.TestCase):
+    def test_report_with_only_naturals_is_confirmed_zero_animals(self):
+        rows=json.loads((Path(__file__).parent/'fixtures/harvest-only-naturals.json').read_text(encoding='utf-8'))
+        market=json.loads((Path(Config.load().maa_dir)/'resource/roguelike/BlackFlow/scrap_market.json').read_text(encoding='utf-8'))
+        naturals={item['name'] for item in market['scraps'] if item.get('category')=='natural'}
+        result=harvest_animals_from_ocr(rows,naturals)
+        self.assertEqual(result,())
+        self.assertFalse(animals_satisfy(result,['襁褓中的猫']))
+
+    def test_mixed_harvest_preserves_counts_but_unknown_card_is_not_zero(self):
+        natural={'text':'回声玉米','score':.99}
+        cat={'text':'襁褓中的猫','score':.95}
+        self.assertEqual(harvest_animals_from_ocr([natural,cat,cat],{'回声玉米'}),('swaddled_cat','swaddled_cat'))
+        for rows in ([],[{'text':'4','score':.99}],
+                     [natural,{'text':'未识别卡片','score':.99}],
+                     [{'text':'回声玉米','score':.2}]):
+            self.assertIsNone(harvest_animals_from_ocr(rows,{'回声玉米'}))
+
     def test_harvest_ocr_preserves_duplicate_cards_and_rejects_uncertain_text(self):
         rows=[{'text':s,'score':.95} for s in ('襁褓中的狗','襁褓中的猫','襁褓中的狗')]
         self.assertEqual(animals_from_ocr(rows),('swaddled_cat','swaddled_dog','swaddled_dog'))

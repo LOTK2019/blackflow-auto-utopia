@@ -28,3 +28,21 @@ def animals_from_ocr(texts):
                 found.append(kind)
                 break
     return tuple(sorted(found)) if found else None
+
+
+def harvest_animals_from_ocr(texts, known_naturals):
+    """收获卡逐张确认：已知自然物计0只，未知名称仍返回None。"""
+    found=[]; labels=0
+    for item in texts:
+        text=item.get('text','').replace(' ','')
+        if not text or text.isdigit():
+            continue
+        labels+=1
+        animal=animals_from_ocr([item])
+        if animal is not None:
+            found.extend(animal)
+        elif item.get('score',0)>=.85 and text in known_naturals and text not in ANIMAL_TYPES:
+            continue
+        else:
+            return None
+    return tuple(sorted(found)) if labels else None
