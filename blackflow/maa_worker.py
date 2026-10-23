@@ -102,6 +102,12 @@ def make_overlay(config, phase, folder):
             "id": "utopia_burn_exit_by_text", "event_name": "险路尽头", "rank": -100,
             "option_text": ["说服同伴"], "allow_fallback": False,
         })
+        # 三重身的捷径会跨层，但原生节点完成逻辑仍把它当普通事件，
+        # 随后以旧楼层重建新地图。准备局选择安全离开，不猜测跨层地图。
+        flight['encounter_rules'].append({
+            'id':'utopia_avoid_untracked_floor_shortcut','event_name':'三重身','rank':-100,
+            'option_text':['自己找路'],'allow_fallback':False,
+        })
         # 原生插件在严格选择失败时会转入放弃入口；准备阶段保留现场，
         # 由父进程核验烧水证据后报错，不能误入正式局或清掉诊断现场。
         tasks[prefix + "ExitThenAbandon-Enter"] = {

@@ -50,6 +50,25 @@ class NodeCountTests(unittest.TestCase):
 
 
 class SeedStrategyTests(unittest.TestCase):
+    def test_shortcut_encounter_uses_safe_exit_in_both_preparation_profiles(self):
+        for method in ('黄商店种植','绿商店投资'):
+            c=Config.load();c.prepare_method=method
+            with tempfile.TemporaryDirectory() as folder:
+                make_overlay(c,'prepare',Path(folder))
+                strategy=json.loads((Path(folder)/'resource/roguelike/BlackFlow/strategy.json').read_text(encoding='utf-8'))
+            profile_id='burn' if method=='黄商店种植' else 'burn_with_investment'
+            profile=next(p for p in strategy['profiles'] if p['id']==profile_id)
+            modules=[m for m in strategy['modules'] if m['id'] in profile['modules']]
+            rules=[r for m in modules for r in m.get('encounter_rules',[]) if r.get('event_name')=='三重身']
+            self.assertEqual(len(rules),1)
+            rule=rules[0]
+            # 报告里第一项跨层，第二项保持当前楼层；不依赖显示次序。
+            options=['接受它的提议','自己找路—']
+            for displayed in (options,list(reversed(options))):
+                matches=[t for t in displayed if any(text in t for text in rule['option_text'])]
+                self.assertEqual(matches,['自己找路—'])
+            self.assertFalse(rule['allow_fallback'])
+
     def ap_forbids(self,points,edges,floor=3,movement='walk',exit=False):
         facts={'action_points':points,'current_floor':floor,'candidate.move_edges':edges,
                'candidate.movement':movement,'candidate.exit':exit}
