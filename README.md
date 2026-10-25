@@ -6,11 +6,10 @@ MuMu / ADB 桌面脚本，复用 MAA 的开局、干员招募、种植、投资�
 
 **下载：** [最新 Windows 独立版](https://github.com/LOTK2019/blackflow-auto-utopia/releases/latest)。下载 Release 中的完整 Windows ZIP，不要把 GitHub 自动生成的 Source code ZIP 当作可执行版本。完整解压后运行 `自动实托邦.exe`，不要只复制 EXE。
 
-**v0.1.2：** [完整包与覆盖补丁](https://github.com/LOTK2019/blackflow-auto-utopia/releases/tag/v0.1.2)。新用户下载完整包；已有 v0.1.0、rc.1/rc.2 或 v0.1.1 的用户可关闭主程序及后台 worker 后覆盖补丁。修复节点统计因偶发未分类和额外候选而停止的问题，以完整地图和已知拓扑为锚点逐位置跨轮复核；未知布局或证据冲突仍保留现场。包含 v0.1.1 的奖励 Top N、羽蛇确认及加载恢复等修正。96项测试及冻结EXE离线回放通过，没有为本次更新重新烧水；各项验证范围见“验证记录.md”。
+**v0.1.3：** [完整包与覆盖补丁](https://github.com/LOTK2019/blackflow-auto-utopia/releases/tag/v0.1.3)。修复MuMu自动检测对自定义安装路径、新旧目录、实例配置和已连接设备的兼容；多实例地址可下拉选择，检测记录保存到用户数据目录`runtime/discovery.json`。补上获得干员展示页的有限恢复。114项测试及本机自动发现、界面和原生任务资源加载检查通过；招募问题尚未整段实机复现。新用户下载完整包，已有v0.1.0、rc或v0.1.1/v0.1.2可关闭主程序及worker后覆盖累计补丁。包含之前所有修正，验证范围见`验证记录.md`。
 
 ## 启动
 
-**源码最新修正（尚未更新上述Release）：** MuMu自动发现支持运行进程/注册表、自定义安装路径、新旧目录、XML/JSON实例配置，以及多实例地址下拉选择。检测详情在用户数据目录`runtime/discovery.json`。另补上获得干员展示页的有限恢复；反馈图验证与尚未实机复现的范围见`验证记录.md`。
 
 独立版完整解压后双击 **自动实托邦.exe**，不需要 Python 或本地 MAA。配置和日志存放于 `%LOCALAPPDATA%\BlackFlowUtopia`，内置引擎固定使用随包资源。首次请自动发现 MuMu，或手填本机模拟器的 ADB 路径和地址。
 
