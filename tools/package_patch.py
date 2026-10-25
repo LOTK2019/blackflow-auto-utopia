@@ -36,12 +36,12 @@ def package_patch(base, target, output, version):
             archive.write(target/name,name)
         archive.writestr('patch-manifest.json',json.dumps(manifest,ensure_ascii=False,indent=2))
         archive.writestr('补丁使用说明.txt',
-            f'{version} 累计覆盖补丁，适用于已完整解压的 v0.1.0、rc.1/rc.2及v0.1.1/v0.1.2目录。\n'
+            f'{version} 累计覆盖补丁，适用于已完整解压的 v0.1.0至v0.1.3（含rc.1/rc.2）目录。\n'
             '请关闭程序及其后台 worker，再把本补丁解压覆盖到原来包含“自动实托邦.exe”的目录。\n'
             '不能在单独的补丁文件夹启动。未安装者先下载 v0.1.0 完整 Windows 包。\n'
             '本补丁不包含 config.json，不覆盖用户数据目录的配置与日志。\n'
-            '包括MuMu自动检测、多实例地址选择、获得干员展示页恢复，以及之前各版修正。\n'
-            '自动发现已本机实测；招募展示修正通过截图和资源加载检查，尚未整段实机复现，详情见验证记录.md。\n'
+            '包括按MAA恢复招募确认后继、每券动画预算，以及之前的MuMu自动检测等修正。\n'
+            '120项测试和原生无输入计数验证通过；动态皮肤招募尚未整段实机验收，详情见验证记录.md。\n'
             '报错记录位于 %LOCALAPPDATA%\\BlackFlowUtopia\\artifacts\\时间目录\\errors。\n'
             '源码、AGPL许可证及第三方说明随补丁提供；MAA核心未修改，沿用v0.1.0完整包。\n')
     with zipfile.ZipFile(output) as archive:
