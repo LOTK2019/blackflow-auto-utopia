@@ -128,8 +128,10 @@ class Runner:
         return handle
 
     def connect(self):
+        self.config.adb_path = os.path.expandvars(self.config.adb_path.strip().strip('"'))
+        self.adb.executable = self.config.adb_path
         if not self.config.address.strip() or self.config.address.strip().lower() == "auto":
-            path, addresses = discover(self.config.adb_path)
+            path, addresses = discover(self.config.adb_path, log=self.log, report_path=ROOT/'runtime/discovery.json')
             if len(addresses) != 1:
                 raise RuntimeError(f"检测到 {len(addresses)} 个设备，请在界面手动选定 ADB 地址：{addresses}")
             self.config.adb_path, self.config.address = path, addresses[0]

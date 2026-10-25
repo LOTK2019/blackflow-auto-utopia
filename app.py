@@ -76,7 +76,7 @@ class App:
         conn = ttk.LabelFrame(left, text="模拟器连接 · MuMu / 雷电", padding=10)
         conn.pack(fill="x", pady=(0, 10))
         self.field(conn, "adb_path", "ADB 路径", self.cfg.adb_path)
-        self.field(conn, "address", "ADB 地址", self.cfg.address)
+        self.field(conn, "address", "ADB 地址", self.cfg.address, ['auto'])
         ttk.Button(conn, text="自动发现 MuMu", command=self.detect).grid(row=2, column=0, columnspan=2, sticky="ew", pady=5)
         self.note(conn, "地址可手填，例如 127.0.0.1:16384；填 auto 自动连接", 3)
         formal = ttk.LabelFrame(left, text="正式局 · 固定文明开化分队", padding=10)
@@ -359,7 +359,8 @@ class App:
         path = self.vars["adb_path"].get()
 
         def job():
-            adb, addresses = discover(path)
+            adb, addresses = discover(path, log=lambda t: self.bus.put(('log',t)),
+                                      report_path=ROOT/'runtime/discovery.json')
             self.bus.put(("detected", (adb, addresses)))
 
         self.background(job)
@@ -431,13 +432,17 @@ class App:
                 elif kind == "detected":
                     adb, addresses = value
                     self.vars["adb_path"].set(adb)
+                    self.fields['address'].configure(values=['auto', *addresses])
                     if len(addresses) == 1:
                         self.vars["address"].set(addresses[0])
                         self.status.set("已发现 MuMu：" + addresses[0])
                     elif addresses:
-                        self.status.set("多个实例，请手填所需地址：" + "、".join(addresses))
+                        if self.vars['address'].get() not in addresses:
+                            self.vars['address'].set('auto')
+                        self.status.set("多个实例，请从ADB地址下拉框选择：" + "、".join(addresses))
                     else:
-                        self.status.set("未发现运行的 MuMu 实例，请启动模拟器或手填 ADB 地址")
+                        self.vars['address'].set('auto')
+                        self.status.set("未发现在线MuMu，请启动实例并启用本地ADB；检测详情见runtime/discovery.json")
         except queue.Empty:
             pass
         self.root.after(100, self.drain)

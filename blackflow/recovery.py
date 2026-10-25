@@ -73,7 +73,7 @@ def install_native_recovery(tasks, maa_dir, phase):
     for name in (p+'StartExplore',p+'StartExplore-EnterCheck'):
         patch(name,onErrorNext=[r+'StartWait'])
 
-    targets = [r+'Recruit', r+'Floor']
+    targets = [r+'Recruit', r+'RecruitAnimation', r+'Floor']
     if phase == 'prepare':
         targets.insert(0, r+'Event')
         # 尽头事件退出后可能仍在加载。Stages 原生错误分支直接放弃，
@@ -97,6 +97,20 @@ def install_native_recovery(tasks, maa_dir, phase):
         'exceededNext':[r+'Exhausted'],
         'next':['BlackFlow@StartExplore@Roguelike@ChooseOperConfirm'],
         'onErrorNext':[r+'Wait']}
+    # 获得干员的立绘页没有确认/地图按钮。只在中央职业英文标题明确时
+    # 使用原生右上角跳过位置；不重新执行会递增顺位的ChooseOper插件。
+    animation = 'BlackFlow@StartExplore@Roguelike@RecruitWithoutButton'
+    skip_rect = raw.get('StartExplore@Roguelike@RecruitWithoutButton', {}).get(
+        'specificRect', [1180,15,85,60])
+    tasks[r+'RecruitAnimation'] = {
+        'algorithm':'OcrDetect', 'text':['SPECIALIST','VANGUARD','SUPPORTER','GUARD',
+            'DEFENDER','MEDIC','CASTER','SNIPER'], 'fullMatch':True,
+        'roi':[400,430,500,200], 'action':'ClickRect','specificRect':skip_rect,
+        'postDelay':800, 'maxTimes':3, 'exceededNext':[r+'Exhausted'],
+        'reduceOtherTimes':[animation+'*20'],
+        'next':['BlackFlow@StartExplore@Roguelike@RecruitSkip',
+                'BlackFlow@StartExplore@Roguelike@RecruitOther',p+'EnterAfterRecruit',p+'NextLevel',r+'Wait'],
+        'onErrorNext':[r+'Wait']}
     tasks[r+'Floor'] = {
         'baseTask':p+'NextLevel', 'action':'DoNothing', 'maxTimes':3,
         'exceededNext':[r+'Exhausted'], 'next':[p+'NextLevel'],
@@ -107,8 +121,8 @@ def install_native_recovery(tasks, maa_dir, phase):
     tasks[r+'Exhausted'] = {'algorithm':'JustReturn','action':'DoNothing','next':['Stop']}
     # 正式局 NextLevel.next 是 Stop。不能在招募动画页展开 NextLevel#next，
     # 否则尚未识别到地图就会执行无条件 Stop（长招募动画尤其容易触发）。
-    tasks['BlackFlow@StartExplore@Roguelike@RecruitWithoutButton'] = {
-        'algorithm':'JustReturn','action':'ClickRect','specificRect':[615,330,50,60],
+    tasks[animation] = {
+        'algorithm':'JustReturn','action':'ClickRect','specificRect':skip_rect,
         'postDelay':600,'maxTimes':20,'exceededNext':[r+'Wait'],
         'next':['BlackFlow@StartExplore@Roguelike@RecruitOther',p+'EnterAfterRecruit',
                 p+'NextLevel','BlackFlow@StartExplore@Roguelike@RecruitWithoutButton']}
@@ -128,7 +142,7 @@ def install_native_recovery(tasks, maa_dir, phase):
     for name in (p+'StageEncounterJudgeOption', 'BlackFlow@StartExplore@Roguelike@ChooseOper'):
         patch(name, onErrorNext=[r+'Wait'])
     # 正常页之间的短暂动画、确认文字漏识别交给原有 ProcessTask 重读，再进统一恢复。
-    resets = [r+'Wait*6', r+'Recruit*3', r+'RecruitRead*3', r+'Floor*3']
+    resets = [r+'Wait*6', r+'Recruit*3', r+'RecruitRead*3', r+'RecruitAnimation*3', r+'Floor*3']
     if phase == 'prepare':
         resets.extend([r+'Event*3',r+'MapReady*3',r+'MapZoomOut*3'])
     for name in (p+'StageEncounterReward', p+'NextLevel', p+'EnterAfterRecruit'):
@@ -142,7 +156,8 @@ def install_native_recovery(tasks, maa_dir, phase):
         base = name.removeprefix('BlackFlow@')
         original = raw.get(base,{})
         values = {'baseTask':base,
-                  'reduceOtherTimes':[*original.get('reduceOtherTimes',[]),r+'RecruitRead*3',r+'Recruit*3']}
+                  'reduceOtherTimes':[*original.get('reduceOtherTimes',[]),r+'RecruitRead*3',r+'Recruit*3',
+                                      r+'RecruitAnimation*3',animation+'*20']}
         if 'next' in original:
             values['next'] = ['BlackFlow@'+n if n.startswith(('StartExplore@','Roguelike@')) else n for n in original['next']]
         values['template'] = 'RecruitSkip.png' if name.endswith('RecruitSkip') else 'Roguelike@StageEncounterGiveUpRecruitConfirm.png'

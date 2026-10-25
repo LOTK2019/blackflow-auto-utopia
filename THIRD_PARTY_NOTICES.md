@@ -9,5 +9,6 @@
 - 发行包附 `MAA-v6.20.1-source.zip` 原版对应源码、`源码.zip` 本项目源码与 `第三方许可/`。本项目通过 Python 调用原版核心，并在运行目录生成增量任务/策略资源，没有修改分发的 MaaCore 二进制。
 - Python、OpenCV、ONNX Runtime、DirectML 等组件各自的许可声明见完整发行包中的 `第三方许可/` 和组件自带许可。
 - 明日方舟及其图像素材归相关权利人所有；PRTS 资料链接见 README。
+- MuMu自动发现的进程/目录及注册表规则参考MAA上游[WinAdapter.cs](https://github.com/MaaAssistantArknights/MaaAssistantArknights/blob/dev-v2/src/MaaWpfGui/Helper/WinAdapter.cs)和[MuMu12Extra.cs](https://github.com/MaaAssistantArknights/MaaAssistantArknights/blob/dev-v2/src/MaaWpfGui/Models/EmulatorConnectionExtra/MuMu12Extra.cs)，2026-10-25查阅；Python实现随本项目源码提供，原版核心版本未变。
 
 重新分发时请保留许可证、第三方声明与对应源码，不要只分发单个 EXE。

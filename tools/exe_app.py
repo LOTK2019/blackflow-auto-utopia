@@ -12,7 +12,12 @@ if __name__ == "__main__":
         sys.stderr = sys.stdout
     try:
         import app
-        if "--node-check" in sys.argv:
+        if '--discovery-check' in sys.argv:
+            from blackflow.discovery import discover
+            adb, addresses = discover('', log=print, report_path=ROOT/'runtime/discovery.json')
+            (ROOT/'自动发现检查.json').write_text(json.dumps(
+                {'adb':adb,'addresses':addresses,'game_inputs':False},ensure_ascii=False,indent=2),encoding='utf-8')
+        elif "--node-check" in sys.argv:
             from pathlib import Path
             from blackflow.config import Config
             from blackflow.nodes import reconcile_node_maps
@@ -69,7 +74,7 @@ if __name__ == "__main__":
             app.main()
     except Exception:
         traceback.print_exc()
-        if any(flag in sys.argv for flag in ('--diagnose','--run','--phase','--ui-check','--image-check','--package-check','--node-check')):
+        if any(flag in sys.argv for flag in ('--diagnose','--run','--phase','--ui-check','--image-check','--package-check','--node-check','--discovery-check')):
             # 无控制台版本的命令行诊断必须非零退出，不能卡在 bootloader
             # 的未处理异常弹窗；原异常及错误现场已经保存在用户数据目录。
             raise SystemExit(1)

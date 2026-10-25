@@ -109,7 +109,7 @@ class Config:
             raise ValueError('准备方式无效')
         if not 1 <= self.min_effective_nodes <= 100:
             raise ValueError('有效节点数量须为1～100')
-        if not Path(self.adb_path).is_file():
+        if not Path(self.adb_path.strip().strip('"')).is_file() and self.address.strip().lower() not in ('', 'auto'):
             raise ValueError("找不到 ADB，请检查路径")
         if not (Path(self.maa_dir) / "MaaCore.dll").is_file():
             raise ValueError("找不到 MaaCore.dll，请选择 MAA 安装目录")

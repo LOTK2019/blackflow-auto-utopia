@@ -1,0 +1,6 @@
+{
+  "source": "2026-10-25 reported recruitment display screenshot; no account or paths",
+  "frame_size": [1280,720],
+  "ocr": [{"text":"SPECIALIST","score":0.989454197883606,"box":[520,497,601,513]},
+          {"text":"WANG","score":0.9911767244338989,"box":[682,571,793,598]}]
+}

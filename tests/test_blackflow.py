@@ -121,6 +121,7 @@ class IconTests(unittest.TestCase):
 class LoopTests(unittest.TestCase):
     def make_runner(self, statuses):
         r = Runner(Config.load(), log=lambda _: None)
+        r.config.node_filter_enabled = False  # 本组只测循环；不继承玩家的可选节点筛选。
         r.acquire_lock = Mock(return_value=Mock())  # 单元测试不争用正在进行的账户实测。
         r.require_theme = lambda _: None
         r.connect = lambda: None
