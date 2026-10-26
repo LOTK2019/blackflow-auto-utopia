@@ -385,13 +385,10 @@ class Runner:
                 except ValueError as exc:
                     self.log('节点统计需重扫：'+str(exc))
             current = valid[-1] if valid else None
-            consensus = reconcile_node_maps(observations, templates, minimum=self.config.min_effective_nodes)
+            consensus = reconcile_node_maps(observations, templates)
             (self.session/f'{self.cycle:03d}-nodes-{attempt}.json').write_text(
                 json.dumps({'maps':evidence['node_maps'],'accepted':current,'consensus':consensus},ensure_ascii=False,indent=2),encoding='utf-8')
             if consensus:
-                if consensus.get('effective_is_upper_bound'):
-                    self.log(f"第一层有效节点至多 {consensus['effective']}（已复核空地 {consensus['empty']}；未知节点全部按有效计算仍不达标）")
-                    return consensus['effective']
                 self.log(f"第一层有效节点 {consensus['effective']}（空地 {consensus['empty']}，总节点 {consensus['total']}；逐位置跨轮复核）")
                 return consensus['effective']
             if current and previous and (current['effective'],current['empty'],current['types']) == (previous['effective'],previous['empty'],previous['types']):

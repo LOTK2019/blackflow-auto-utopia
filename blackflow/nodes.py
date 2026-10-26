@@ -14,7 +14,7 @@ def _geometry(snapshot):
     return positions, edges
 
 
-def reconcile_node_maps(observations, templates, minimum=None):
+def reconcile_node_maps(observations, templates):
     """完整识别作锚点，再按固定拓扑逐位置复核空地/有效；不用于导航。"""
     anchors = []
     for group in observations:
@@ -73,18 +73,7 @@ def reconcile_node_maps(observations, templates, minimum=None):
             if len(values) == 1:
                 votes[p][next(iter(values))] += 1
     if any(len(v) != 1 or sum(v.values()) < 2 for v in votes.values()):
-        # 仅用于明确不达标：每个未知位置全部按有效计算，绝不按空地处理。
-        # 仍要求完整原生锚点、唯一模板、同拓扑独立扫描及无空/非空冲突。
-        if minimum is None or any(len(v)>1 for v in votes.values()):
-            return None
-        empty=sum(v.get(False,0)>=2 for v in votes.values())
-        upper=len(cells)-empty
-        if upper>=minimum:
-            return None
-        return {'effective':upper,'empty':empty,'total':len(cells),
-                'method':'topology_effective_upper_bound','effective_is_upper_bound':True,
-                'minimum':minimum,'template':template['id'],'supporting_observations':supporting,
-                'confirmed_empty_positions':[list(p) for p,v in sorted(votes.items()) if v.get(False,0)>=2]}
+        return None
     count = sum(next(iter(v)) for v in votes.values())
     return {'effective': count, 'empty': len(cells)-count, 'total': len(cells),
             'types': {'nonempty': count, 'empty': len(cells)-count},
