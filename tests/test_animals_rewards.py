@@ -3,13 +3,22 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from blackflow.animals import animals_satisfy, animals_from_ocr, harvest_animals_from_ocr
+from blackflow.animals import animals_satisfy, animals_from_ocr, harvest_animals_from_ocr, known_harvest_items
 from blackflow.config import Config
 from blackflow.maa_worker import make_overlay
 from blackflow.rewards import DEFAULT_REWARD_ORDER, SERPENT_REWARDS, reward_plan, required_rewards
 
 
 class AnimalCountTests(unittest.TestCase):
+    def test_feedback_processing_and_natural_do_not_hide_dog(self):
+        rows=json.loads((Path(__file__).parent/'fixtures/harvest-mixed-processing-dog.json').read_text(encoding='utf-8'))
+        market=json.loads((Path(Config.load().maa_dir)/'resource/roguelike/BlackFlow/scrap_market.json').read_text(encoding='utf-8'))
+        items=known_harvest_items(market)
+        self.assertIn('坎诺特的触须',items)
+        self.assertEqual(harvest_animals_from_ocr(rows,items),('swaddled_dog',))
+        self.assertEqual(harvest_animals_from_ocr(list(reversed(rows)),items),('swaddled_dog',))
+        self.assertIsNone(harvest_animals_from_ocr(rows+[{'text':'未知物品','score':.99}],items))
+
     def test_report_with_only_naturals_is_confirmed_zero_animals(self):
         rows=json.loads((Path(__file__).parent/'fixtures/harvest-only-naturals.json').read_text(encoding='utf-8'))
         market=json.loads((Path(Config.load().maa_dir)/'resource/roguelike/BlackFlow/scrap_market.json').read_text(encoding='utf-8'))

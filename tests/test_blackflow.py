@@ -31,12 +31,10 @@ class ConfigurationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             make_overlay(Config.load(), "formal", Path(d))
             tasks = json.loads((Path(d) / "resource/tasks/tasks.json").read_text(encoding="utf-8"))
-            self.assertEqual(tasks["BlackFlow@Roguelike@NextLevel"]["next"], ["Stop"])
-            guard = tasks["BlackFlow@StartExplore@Roguelike@ChooseOperConfirm"]
-            self.assertIn("冬时", guard["text"])
-            self.assertIn("深海色", guard["text"])
-            self.assertNotIn("桃金娘", guard["text"])
-            self.assertEqual(guard["roi"], [0, 65, 250, 80])
+            self.assertEqual(tasks['BlackFlow@Roguelike@NextLevel']['next'], ['AutoUtopia@VerifiedMapStop'])
+            self.assertEqual(tasks['AutoUtopia@VerifiedMapStop']['baseTask'],'BlackFlow@Roguelike@NextLevel')
+            self.assertNotIn('BlackFlow@StartExplore@Roguelike@ChooseOperConfirm',tasks)
+            self.assertEqual(len(tasks['BlackFlow@Roguelike@RolesConfirm']['sub']),3)
 
     def test_difficulty_selection_reuses_maa_with_correct_list_coordinates(self):
         for phase, target in (("prepare", "保密等级"), ("formal", "16")):

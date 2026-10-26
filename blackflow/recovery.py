@@ -73,12 +73,8 @@ def install_native_recovery(tasks, maa_dir, phase):
     for name in (p+'StartExplore',p+'StartExplore-EnterCheck'):
         patch(name,onErrorNext=[r+'StartWait'])
 
-    recruit_skip = 'BlackFlow@StartExplore@Roguelike@RecruitSkip'
-    recruit_other = 'BlackFlow@StartExplore@Roguelike@RecruitOther'
-    # MAA的助战插件可能已提交确认。恢复入口也必须能接住跳过页/下一张券，
-    # 不能只等待已经消失的选人详情页；这里都以实际页面识别为门控。
-    targets = [r+'Recruit', recruit_skip, recruit_other, p+'EnterAfterRecruit',
-               r+'RecruitAnimation', r+'Floor']
+    # 招募完整沿用MAA原生链路；通用恢复仅重读楼层/事件，不点击未知招募页。
+    targets = [r+'Floor']
     if phase == 'prepare':
         targets.insert(0, r+'Event')
         # 尽头事件退出后可能仍在加载。Stages 原生错误分支直接放弃，
@@ -96,26 +92,6 @@ def install_native_recovery(tasks, maa_dir, phase):
         # 严格选项没扫到也先回到重扫，而不是结束准备局。
         tasks[p+'ExitThenAbandon-Enter'] = {
             'algorithm':'JustReturn','action':'DoNothing','next':[r+'Wait']}
-    tasks[r+'Recruit'] = {
-        'baseTask':'BlackFlow@StartExplore@Roguelike@ChooseOperConfirm',
-        'action':'DoNothing', 'preDelay':800, 'maxTimes':3,
-        'exceededNext':[r+'Exhausted'],
-        'next':['BlackFlow@StartExplore@Roguelike@ChooseOperConfirm'],
-        'onErrorNext':[r+'Wait']}
-    # 获得干员的立绘页没有确认/地图按钮。只在中央职业英文标题明确时
-    # 使用原生右上角跳过位置；不重新执行会递增顺位的ChooseOper插件。
-    animation = 'BlackFlow@StartExplore@Roguelike@RecruitWithoutButton'
-    animation_budget = 40
-    skip_rect = raw.get('StartExplore@Roguelike@RecruitWithoutButton', {}).get(
-        'specificRect', [1180,15,85,60])
-    tasks[r+'RecruitAnimation'] = {
-        'algorithm':'OcrDetect', 'text':['SPECIALIST','VANGUARD','SUPPORTER','GUARD',
-            'DEFENDER','MEDIC','CASTER','SNIPER'], 'fullMatch':True,
-        'roi':[320,300,900,380], 'action':'ClickRect','specificRect':skip_rect,
-        'postDelay':800, 'maxTimes':3, 'exceededNext':[r+'Exhausted'],
-        'reduceOtherTimes':[animation+f'*{animation_budget}'],
-        'next':[recruit_other,p+'EnterAfterRecruit',p+'NextLevel',recruit_skip,animation],
-        'onErrorNext':[r+'Wait']}
     tasks[r+'Floor'] = {
         'baseTask':p+'NextLevel', 'action':'DoNothing', 'maxTimes':3,
         'exceededNext':[r+'Exhausted'], 'next':[p+'NextLevel'],
@@ -124,58 +100,12 @@ def install_native_recovery(tasks, maa_dir, phase):
         'algorithm':'JustReturn','action':'DoNothing','preDelay':1200,
         'maxTimes':6,'exceededNext':[r+'Exhausted'], 'next':[*targets,r+'Wait']}
     tasks[r+'Exhausted'] = {'algorithm':'JustReturn','action':'DoNothing','next':['Stop']}
-    # 正式局 NextLevel.next 是 Stop。不能在招募动画页展开 NextLevel#next，
-    # 否则尚未识别到地图就会执行无条件 Stop（长招募动画尤其容易触发）。
-    tasks[animation] = {
-        'algorithm':'JustReturn','action':'ClickRect','specificRect':skip_rect,
-        'postDelay':600,'maxTimes':animation_budget,'exceededNext':[r+'Wait'],
-        'next':[recruit_other,p+'EnterAfterRecruit',p+'NextLevel',recruit_skip,animation]}
-    # 干员插件只运行一次。确认名字暂未读到时，重读同一详情面板，
-    # 不重进 ChooseOper（它会递增原生的招募顺位）。
-    recruit_confirm = 'BlackFlow@StartExplore@Roguelike@ChooseOperConfirm'
-    recruit_choices = [recruit_confirm,
-                       'BlackFlow@StartExplore@Roguelike@ChooseOperConfirmToGiveUp',
-                       recruit_skip, recruit_other, p+'EnterAfterRecruit', p+'NextLevel', r+'RecruitAnimation',
-                       r+'RecruitRead']
-    # 恢复MAA原始的“确认或确认之后”双入口。助战插件内部已点确认，
-    # 此时姓名详情已消失，必须展开确认后继（包含无按钮跳过），不能强制
-    # 再等姓名OCR或职业英文。姓名门仍只控制真正的右下确认点击。
-    patch('BlackFlow@StartExplore@Roguelike@ChooseOper',
-          next=[recruit_confirm,recruit_confirm+'#next'])
-    tasks[r+'RecruitRead'] = {
-        'algorithm':'JustReturn','action':'DoNothing','preDelay':1200,
-        'maxTimes':3,'next':recruit_choices,'exceededNext':[r+'Wait']}
-    # 原生ChooseOperFlag只归还10次；兜底增大后也须同步，避免长动画把
-    # 后两张券的预算吃掉。只在确认进入新券选人页时归还，不在每次等待时重置。
-    flag = 'BlackFlow@StartExplore@Roguelike@ChooseOperFlag'
-    original_flag = raw.get(flag, raw.get('Roguelike@ChooseOperFlag', {}))
-    inherited_reductions = original_flag.get('reduceOtherTimes',
-        raw.get('Roguelike@ChooseOperFlag', {}).get('reduceOtherTimes', []))
-    patch(flag, reduceOtherTimes=[*inherited_reductions, animation+f'*{animation_budget}',
-                                 r+'RecruitAnimation*3',r+'RecruitRead*3',r+'Recruit*3'])
-    # 任何恢复分支都不会直接重开一局、放弃、随机选择、重新执行完整招募插件。
     patch(p+'RecoveryFailed', next=[r+'Wait'])
     patch(p+'Stages', onErrorNext=[r+'Wait'])
-    for name in (p+'StageEncounterJudgeOption', 'BlackFlow@StartExplore@Roguelike@ChooseOper'):
-        patch(name, onErrorNext=[r+'Wait'])
-    # 正常页之间的短暂动画、确认文字漏识别交给原有 ProcessTask 重读，再进统一恢复。
-    resets = [r+'Wait*6', r+'Recruit*3', r+'RecruitRead*3', r+'RecruitAnimation*3', r+'Floor*3']
+    patch(p+'StageEncounterJudgeOption', onErrorNext=[r+'Wait'])
     if phase == 'prepare':
-        resets.extend([r+'Event*3',r+'MapReady*3',r+'MapZoomOut*3'])
-    for name in (p+'StageEncounterReward', p+'NextLevel', p+'EnterAfterRecruit'):
-        original = tasks.get(name, {}).get('reduceOtherTimes', raw.get(name, {}).get('reduceOtherTimes', []))
-        patch(name, reduceOtherTimes=[*original,*resets])
-    # 一张券已处理且进入招募动画/放弃确认后，下一张券有独立的重读预算。
-    for name in ('BlackFlow@StartExplore@Roguelike@RecruitSkip',
-                 'BlackFlow@StartExplore@Roguelike@ChooseOperConfirmToGiveUp'):
-        # 这些主题变体原本由 MAA 动态生成。首次写入覆盖时必须显式继承；
-        # 否则它会寻找不存在的“完整任务名.png”，破坏原来的放弃/动画分支。
-        base = name.removeprefix('BlackFlow@')
-        original = raw.get(base,{})
-        values = {'baseTask':base,
-                  'reduceOtherTimes':[*original.get('reduceOtherTimes',[]),r+'RecruitRead*3',r+'Recruit*3',
-                                      r+'RecruitAnimation*3',animation+f'*{animation_budget}']}
-        if 'next' in original:
-            values['next'] = ['BlackFlow@'+n if n.startswith(('StartExplore@','Roguelike@')) else n for n in original['next']]
-        values['template'] = 'RecruitSkip.png' if name.endswith('RecruitSkip') else 'Roguelike@StageEncounterGiveUpRecruitConfirm.png'
-        patch(name, **values)
+        # 恢复预算属于每次事件/楼层，不能因移除招募恢复而丢掉跨层重置。
+        resets = [r+'Wait*6',r+'Floor*3',r+'Event*3',r+'MapReady*3',r+'MapZoomOut*3']
+        for name in (p+'StageEncounterReward', p+'NextLevel'):
+            original=tasks.get(name,{}).get('reduceOtherTimes',raw.get(name,{}).get('reduceOtherTimes',[]))
+            patch(name,reduceOtherTimes=[*original,*resets])

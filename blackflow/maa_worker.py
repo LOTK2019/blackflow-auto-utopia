@@ -16,6 +16,7 @@ from .progress import WorkerProgress
 from .recovery import install_native_recovery
 from .strategy import seed_burn_strategy, map_inspection_strategy, optional_seed_completion, SEED_PROFILE, COUNT_PROFILE
 from .rewards import install_reward_tasks, reward_plan, required_rewards
+from .recruitment import NativeRecruitAudit
 
 
 def emit(kind, **data):
@@ -91,10 +92,6 @@ def make_overlay(config, phase, folder):
         tasks['AutoUtopia@HarvestRead'] = {
             'algorithm':'JustReturn','action':'DoNothing','postDelay':3500,
             'next':[prefix+'CultivationResult']}
-        tasks["BlackFlow@StartExplore@Roguelike@ChooseOperConfirm"] = {
-            "algorithm": "OcrDetect", "text": ["机械师"], "fullMatch": True,
-            "roi": [0, 65, 250, 80], "action": "ClickRect", "specificRect": [1110, 640, 30, 30]
-        }
         strategy, profile, flight = read_blackflow_strategy(config.maa_dir)
         for rule in profile["terminal_rules"]:
             rule["next_action"] = "stop_run"
@@ -141,15 +138,24 @@ def make_overlay(config, phase, folder):
         (resource / "roguelike/BlackFlow/strategy.json").write_text(json.dumps(strategy, ensure_ascii=False), encoding="utf-8")
     elif phase == "formal":
         # 在一层标题被识别后结束任务；不让 MAA 进入选路或放弃流程。
-        tasks[prefix + "NextLevel"] = {"next": ["Stop"]}
+        # 原生动画会展开NextLevel#next，因此停止入口本身也须识别地图。
+        # Stop不能放sub（仅结束嵌套任务），也不能直接展开为无条件Stop。
+        tasks[prefix + "NextLevel"] = {"next": ["AutoUtopia@VerifiedMapStop"]}
+        tasks['AutoUtopia@VerifiedMapStop'] = {
+            'baseTask':prefix+'NextLevel','action':'DoNothing',
+            'sub':[], 'next':['Stop']}
         install_reward_tasks(tasks, config)
-        # 先匹配选中干员的左侧详情名字，才允许点击右下确认。
-        # 非目标四星不会通过此门；六星接受首选、备选与允许的同职业回退。
-        allowed = [*config.allowed_six(), *config.four_stars]
-        tasks["BlackFlow@StartExplore@Roguelike@ChooseOperConfirm"] = {
-            "algorithm": "OcrDetect", "text": allowed, "fullMatch": True,
-            "roi": [0, 65, 250, 80], "action": "ClickRect", "specificRect": [1110, 640, 30, 30]
-        }
+        # 选人、确认、动画均由原生MAA完成，不对详情姓名重复OCR。
+        from .config import PROFESSION_NAMES
+        roles = [config.operators()[n]['profession'] for n in [config.six_star, *config.four_stars]]
+        checks=[]
+        for i, role in enumerate(roles):
+            check=f'AutoUtopia@StartVoucherCheck{i}'
+            checks.append(check)
+            tasks[check]={'algorithm':'OcrDetect','text':[PROFESSION_NAMES[role]+'招募券'],
+                          'fullMatch':False,'roi':[186,298,913,200],'action':'DoNothing'}
+        # 原生组合确认完成、三张券展示后只读核对；失败由原生sub失败停止，不进入错误职业列表。
+        tasks[prefix+'RolesConfirm']={'sub':checks}
         # 排名仅影响首选找不到时的 MAA 回退，四星不接受任意替代。
         recruitment = json.loads((Path(config.maa_dir) / "resource/roguelike/BlackFlow/recruitment.json").read_text(encoding="utf-8"))
         preferred = config.allowed_six()
@@ -231,6 +237,7 @@ def run(config, phase):
     handle = lib.AsstCreateEx(callback, None)
     if not handle:
         raise RuntimeError("MAA 实例创建失败")
+    recruitment_audit = NativeRecruitAudit(folder/'debug/asst.log', config, phase)
     cancelled = threading.Event()
 
     def read_commands():
@@ -298,6 +305,9 @@ def run(config, phase):
                         result['optional_route_exhausted']=True
                 emit("callback", msg=msg, data=data)
                 progress.observe(msg, data)
+                if msg == 20002 and data.get('subtask') == 'RoguelikeRecruitTask':
+                    recruitment_audit.complete()
+                    emit('recruitment_audit', **recruitment_audit.snapshot())
                 current_task=data.get('details',{}).get('task','').split('@')[-1]
                 if msg == 20001 and current_task == 'NextLevel':
                     repeated_level_reads += 1
@@ -348,6 +358,7 @@ def run(config, phase):
                     break
             except queue.Empty:
                 pass
+            recruitment_audit.poll()
             if error:
                 lib.AsstStop(handle)
                 break

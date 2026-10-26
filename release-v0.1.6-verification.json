@@ -1,0 +1,65 @@
+{
+  "version": "v0.1.6",
+  "engine": "v6.20.1",
+  "unit_tests": 131,
+  "recruitment": {
+    "counts": {
+      "望": 10,
+      "予愿安洁莉娜": 10,
+      "褐果": 10,
+      "深靛": 10,
+      "维什戴尔": 10,
+      "机械师": 10
+    },
+    "complete_runs": 40,
+    "difficulty": 16,
+    "civilization_runs": 30,
+    "fortress_joint_runs": 10,
+    "joint_roles": "稳扎稳打",
+    "missing_pudding_expected_stop": true,
+    "pudding_success_not_tested_unowned": true,
+    "prior_formal_overlay_equivalence_verified": true,
+    "unexpected_failures_in_final_batches": 0
+  },
+  "prepare": {
+    "success": true,
+    "difficulty": 0,
+    "roles": "稳扎稳打",
+    "squad": "堡垒战术分队",
+    "mechanic_recruited": true,
+    "floor3_reached": true,
+    "yellow_shop_not_encountered": true
+  },
+  "harvest_feedback": {
+    "source": "user-provided-error-screenshot",
+    "old_result": null,
+    "fixed_result": [
+      "swaddled_dog"
+    ],
+    "native_reference": "CultivateHarvestItems + scrap_market.json",
+    "inputs_to_game": false
+  },
+  "limitations": [
+    "收获混合加工品使用用户截图重放验证；本次准备局未遇黄商店。",
+    "严格招募结果审核依赖固定内置引擎原生日志；日志不可核对时停止并保存现场。",
+    "未声称覆盖所有设备、皮肤和分辨率。"
+  ],
+  "source_sha256": {
+    "blackflow/adb.py": "4e1a0c1d7eaf3386a5fab97681f170750655fe2a905e966d3953df2f3fdf0335",
+    "blackflow/animals.py": "054a673b2460db83858c5dd7e4a12fffe060ae225a6a5d99e2369b39424a230c",
+    "blackflow/config.py": "acbe757df857d409247354ec2b179fb403f01d0db66a9a52f524b10b3866611f",
+    "blackflow/discovery.py": "6fe2dd8de8c5efafb0172c1d63d161675d5da2127736f63b6b4cdb877d405f62",
+    "blackflow/errors.py": "b5e0bf0918f1d1b51d4ca190f1d8ef72b99aed9bac54e97ecd2f962e561a7238",
+    "blackflow/maa_worker.py": "9708cf2e72473d86960616e058e94374aa539a7470389af517815d855929565f",
+    "blackflow/nodes.py": "63ca3b9ecf234c80cae92a1a05c46b3f4c5af92a8c9bd4a5cdebf1cfc94344f1",
+    "blackflow/progress.py": "9dbeef78fbdb81c8598d62ec50c25e156b537b2f5afac96f9793ebdef06fd2fb",
+    "blackflow/recovery.py": "ee4940fa1aadab283c6beddd42b3e2472cbefbeb4e38fcae8b8794811047e374",
+    "blackflow/recruitment.py": "fccf2d884421ded484a5c5e420d72cf46c729f6a926a7b5cefb4d54507f5b5b5",
+    "blackflow/rewards.py": "f1f59276683ed0c5ee43c31068721209a8b819e4f4c05cb922e6e95c6444e568",
+    "blackflow/runner.py": "40c5ea6cf30bde9fc9431376af8d25b2642963da1235bed6d704184638433892",
+    "blackflow/strategy.py": "72cc823e2b74e8a9b97d0fc99665f8034432c42d6f8593fe74e4774d0002fca5",
+    "blackflow/ui_layout.py": "980c8b562dfc0f76f2ed73dad8eaf9fa9d3f6c20881ec1bb01421d95c8e87fcb",
+    "blackflow/vision.py": "7b89b96a02e066363e43af0b609d63a50e46c86c810f65e41110874cf2177dcb",
+    "blackflow/__init__.py": "121acc19783e15be4889c68238b32708c504147cb955f80c99f26d9e856ea248"
+  }
+}

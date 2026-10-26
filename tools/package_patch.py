@@ -36,12 +36,12 @@ def package_patch(base, target, output, version):
             archive.write(target/name,name)
         archive.writestr('patch-manifest.json',json.dumps(manifest,ensure_ascii=False,indent=2))
         archive.writestr('补丁使用说明.txt',
-            f'{version} 累计覆盖补丁，适用于已完整解压的 v0.1.0至v0.1.4（含rc.1/rc.2）目录。\n'
+            f'{version} 累计覆盖补丁，适用于已完整解压的 v0.1.0至v0.1.5（含rc.1/rc.2）目录。\n'
             '请关闭程序及其后台 worker，再把本补丁解压覆盖到原来包含“自动实托邦.exe”的目录。\n'
             '不能在单独的补丁文件夹启动。未安装者先下载 v0.1.0 完整 Windows 包。\n'
             '本补丁不包含 config.json，不覆盖用户数据目录的配置与日志。\n'
-            '包括招募列表扫描上限20轮、MAA招募确认后继与每券动画预算，以及MuMu自动检测等修正。\n'
-            '120项测试和原生资源加载通过；超过5页找布丁及动态皮肤招募未整段实机验收，详情见验证记录.md。\n'
+            '招募选择、确认和动画沿用原生MAA（列表上限20轮），增加职业券校验与原生选人结果审核，修复收获混入加工品报错。\n'
+            '131项测试通过；六名目标各10次实机招募入图通过，布丁未拥有时停止负例通过；范围与限制见验证记录.md。\n'
             '报错记录位于 %LOCALAPPDATA%\\BlackFlowUtopia\\artifacts\\时间目录\\errors。\n'
             '源码、AGPL许可证及第三方说明随补丁提供；MAA核心未修改，沿用v0.1.0完整包。\n')
     with zipfile.ZipFile(output) as archive:

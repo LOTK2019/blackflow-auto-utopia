@@ -72,42 +72,28 @@ class NativeRecoveryTests(unittest.TestCase):
         self.assertEqual(tasks[r+'Wait']['maxTimes'],6)
         self.assertEqual(tasks[r+'Wait']['exceededNext'],[r+'Exhausted'])
         self.assertEqual(tasks[r+'Exhausted']['next'],['Stop'])
-        self.assertEqual(tasks['BlackFlow@StartExplore@Roguelike@RecruitSkip']['template'],'RecruitSkip.png')
-        self.assertEqual(tasks['BlackFlow@StartExplore@Roguelike@ChooseOperConfirmToGiveUp']['template'],
-                         'Roguelike@StageEncounterGiveUpRecruitConfirm.png')
-        for key in (r+'Recruit',r+'RecruitRead',r+'Floor',r+'Wait'):
+        for key in tasks:
+            self.assertFalse(key.startswith('BlackFlow@StartExplore@Roguelike@'))
+        for key in (r+'Floor',r+'Wait'):
             for target in tasks[key]['next']:
-                self.assertNotEqual(target,'BlackFlow@StartExplore@Roguelike@ChooseOper')
+                self.assertNotIn('Recruit',target)
                 self.assertNotIn('Abandon',target)
-                self.assertNotIn('StartExploreCD',target)
 
     def test_formal_recovery_never_enters_events_or_changes_squad(self):
         tasks=self.overlay('formal')
         self.assertNotIn('AutoUtopia@RecoveryEvent',tasks)
         self.assertNotIn('BlackFlow@Roguelike@ExitThenAbandon-Enter',tasks)
-        self.assertEqual(tasks['BlackFlow@Roguelike@NextLevel']['next'],['Stop'])
-        animation=tasks['BlackFlow@StartExplore@Roguelike@RecruitWithoutButton']
-        self.assertIn('BlackFlow@Roguelike@NextLevel',animation['next'])
-        self.assertFalse(any('Stop' in n or '#next' in n for n in animation['next']))
+        self.assertEqual(tasks['BlackFlow@Roguelike@NextLevel']['next'],['AutoUtopia@VerifiedMapStop'])
+        self.assertEqual(tasks['AutoUtopia@VerifiedMapStop']['next'],['Stop'])
 
-    def test_reported_six_star_display_has_bounded_guarded_resume(self):
-        fixture=json.loads((Path(__file__).parent/'fixtures/recruit-wang-animation.json').read_text(encoding='utf-8'))
-        for phase in ('prepare','formal'):
-            tasks=self.overlay(phase)
-            r='AutoUtopia@Recovery'; name=r+'RecruitAnimation'
-            action=tasks[name]
-            self.assertIn(name,tasks[r+'Wait']['next'])
-            self.assertEqual(action['maxTimes'],3)
-            self.assertEqual(action['exceededNext'],[r+'Exhausted'])
-            self.assertTrue(action['fullMatch'])
-            x,y,w,h=action['roi']
-            hits=[v for v in fixture['ocr'] if v['text'] in action['text'] and
-                  x<=v['box'][0] and v['box'][2]<=x+w and y<=v['box'][1] and v['box'][3]<=y+h]
-            self.assertEqual([v['text'] for v in hits],['SPECIALIST'])
-            self.assertEqual(action['specificRect'],[1180,15,85,60])
-            self.assertNotIn('BlackFlow@StartExplore@Roguelike@ChooseOper',action['next'])
-            self.assertEqual(tasks['BlackFlow@StartExplore@Roguelike@RecruitWithoutButton']['specificRect'],
-                             action['specificRect'])
+    def test_prepare_recovery_budget_resets_after_events_and_floors(self):
+        p='BlackFlow@Roguelike@'; r='AutoUtopia@Recovery'
+        expected={r+'Wait*6',r+'Floor*3',r+'Event*3',r+'MapReady*3',r+'MapZoomOut*3'}
+        prepare=self.overlay('prepare')
+        formal=self.overlay('formal')
+        for name in (p+'StageEncounterReward',p+'NextLevel'):
+            self.assertTrue(expected.issubset(prepare[name]['reduceOtherTimes']))
+            self.assertFalse(expected.intersection(formal.get(name,{}).get('reduceOtherTimes',[])))
 
     def test_explicit_abandon_phase_does_not_get_recovery_loops(self):
         self.assertFalse(any(k.startswith('AutoUtopia@Recovery') for k in self.overlay('abandon')))

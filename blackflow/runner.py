@@ -17,7 +17,7 @@ from .errors import describe_error, error_event
 from .progress import WorkerProgress
 from .recovery import ReadPolicy, ReadExhausted, read_with_recovery
 from .nodes import effective_nodes, reconcile_node_maps
-from .animals import animals_satisfy, harvest_animals_from_ocr
+from .animals import animals_satisfy, harvest_animals_from_ocr, known_harvest_items
 from .discovery import discover
 from .vision import Vision, ideal_from_text, header_ideal, IDEAL_ROI
 
@@ -223,6 +223,9 @@ class Runner:
                         evidence["reward_rejected"] = True
                     if kind == 'node_maps':
                         evidence['node_maps'] = event.get('snapshots',[])
+                    if kind == 'recruitment_audit':
+                        evidence['recruited'] = event.get('selected',[])
+                        evidence['recruitment_completed_slots'] = event.get('completed_slots',0)
                     if kind == "version":
                         self.log("MAA " + event["version"])
                     if kind == "phase_stats":
@@ -240,12 +243,12 @@ class Runner:
                         self.log('已进入黄商店，开始原生出售、买种与培育流程')
                     if phase == 'prepare' and msg == 20001 and task.split('@')[-1] == 'HarvestRead':
                         market=json.loads((Path(self.config.maa_dir)/'resource/roguelike/BlackFlow/scrap_market.json').read_text(encoding='utf-8'))
-                        known_naturals={item['name'] for item in market['scraps'] if item.get('category')=='natural'}
+                        known_items=known_harvest_items(market)
                         observations=[]
                         for sample in range(2):
                             frame=self.capture(f'harvest-{sample}')
                             texts=self.vision.texts(frame,(1,292,1277,99))
-                            observations.append(harvest_animals_from_ocr(texts,known_naturals))
+                            observations.append(harvest_animals_from_ocr(texts,known_items))
                             (self.session/f'{self.cycle:03d}-harvest-{sample}.json').write_text(
                                 json.dumps({'ocr':texts,'animals':observations[-1]},ensure_ascii=False,indent=2),encoding='utf-8')
                             if sample==0:self.adb.wait(.2)

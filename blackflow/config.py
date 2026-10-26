@@ -36,6 +36,15 @@ def read_blackflow_strategy(maa_dir):
         raise ValueError("MAA 资源不兼容，缺少黑流树海策略：" + "、".join(missing) + "；请使用独立版内置引擎，或同时更新 MAA 程序与资源")
     return strategy, profile, flight
 REWARD_TARGETS = {"默认排序": "", "空间租赁（背包+2）": "6", "林间代步（加工品）": "2", "调查预付款（8源石锭）": "5", "未编号物（普通收藏品）": "4", "退行补偿（随机收藏品）": "", "巢寄生（背包-1）": "3"}
+START_ROLE_PROFESSIONS = {
+    '先手必胜': {'PIONEER', 'SNIPER', 'SPECIAL'},
+    '稳扎稳打': {'TANK', 'CASTER', 'SNIPER'},
+    '取长补短': {'WARRIOR', 'SUPPORT', 'MEDIC'},
+    '灵活部署': {'PIONEER', 'SUPPORT', 'SPECIAL'},
+    '坚不可摧': {'TANK', 'CASTER', 'MEDIC'},
+}
+PROFESSION_NAMES = {'PIONEER':'先锋','SNIPER':'狙击','SPECIAL':'特种',
+                    'TANK':'重装','CASTER':'术师','WARRIOR':'近卫','SUPPORT':'辅助','MEDIC':'医疗'}
 
 
 @dataclass
@@ -126,6 +135,15 @@ class Config:
         roles = [ops[n]["profession"] for n in [self.six_star, *self.four_stars]]
         if len(set(roles)) != 3:
             raise ValueError("三名开局干员职业必须不同")
+        if self.roles not in (*START_ROLE_PROFESSIONS, '随心所欲'):
+            raise ValueError('开局组合无效')
+        if self.roles in START_ROLE_PROFESSIONS:
+            available = START_ROLE_PROFESSIONS[self.roles]
+            missing = [f'{name}（{PROFESSION_NAMES[ops[name]["profession"]]}）'
+                       for name in [self.six_star, *self.four_stars]
+                       if ops[name]['profession'] not in available]
+            if missing:
+                raise ValueError(f'开局组合“{self.roles}”没有对应招募券：' + '、'.join(missing))
         if any(ops[n]["profession"] != roles[0] for n in self.fallback_six_stars):
             raise ValueError("备选六星必须与首选六星同职业，才能使用同一张招募券")
         if self.prepare_squad not in ("特勤分队", "堡垒战术分队") or self.prepare_roles not in ("稳扎稳打", "坚不可摧"):

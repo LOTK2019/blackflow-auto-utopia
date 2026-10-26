@@ -30,8 +30,14 @@ def animals_from_ocr(texts):
     return tuple(sorted(found)) if found else None
 
 
-def harvest_animals_from_ocr(texts, known_naturals):
-    """收获卡逐张确认：已知自然物计0只，未知名称仍返回None。"""
+def known_harvest_items(market):
+    """复用内置MAA零件目录；自然物和加工品均可能出现在收获页。"""
+    return {item['name'] for item in market['scraps']
+            if item.get('category') in ('natural', 'processing')}
+
+
+def harvest_animals_from_ocr(texts, known_items):
+    """收获卡逐张确认：已知零件计0只，未知名称仍返回None。"""
     found=[]; labels=0
     for item in texts:
         text=item.get('text','').replace(' ','')
@@ -41,7 +47,7 @@ def harvest_animals_from_ocr(texts, known_naturals):
         animal=animals_from_ocr([item])
         if animal is not None:
             found.extend(animal)
-        elif item.get('score',0)>=.85 and text in known_naturals and text not in ANIMAL_TYPES:
+        elif item.get('score',0)>=.85 and text in known_items and text not in ANIMAL_TYPES:
             continue
         else:
             return None
