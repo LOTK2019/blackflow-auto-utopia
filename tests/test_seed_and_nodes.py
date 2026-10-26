@@ -59,10 +59,25 @@ class NodeCountTests(unittest.TestCase):
 
     def test_runner_replays_real_failed_session_with_no_game_input(self):
         groups,_=self.reported_jitter()
-        r=Runner(Config.load(),log=lambda _:None);r.capture=Mock();r.adb=Mock()
+        r=Runner(Config.load(),log=lambda _:None);r.config.min_effective_nodes=8;r.capture=Mock();r.adb=Mock()
         r.maa=Mock(side_effect=[{'node_maps':g} for g in groups])
         self.assertEqual(r.count_effective_nodes(),8)
         self.assertEqual(r.maa.call_count,3)
+        r.adb.tap.assert_not_called()
+
+    def test_unknown_battle_can_only_reject_below_conservative_upper_bound(self):
+        groups=json.loads((Path(__file__).parent/'fixtures/node-count-unknown-battle.json').read_text(encoding='utf-8'))['observations']
+        _,templates=self.reported_jitter()
+        self.assertIsNone(reconcile_node_maps(groups,templates))
+        upper=reconcile_node_maps(groups,templates,minimum=9)
+        self.assertEqual(upper['effective'],8)
+        self.assertTrue(upper['effective_is_upper_bound'])
+        self.assertIsNone(reconcile_node_maps(groups,templates,minimum=8))
+        self.assertIsNone(reconcile_node_maps([groups[1]],templates,minimum=9))
+        self.assertIsNone(reconcile_node_maps(groups,[],minimum=9))
+        r=Runner(Config.load(),log=lambda _:None);r.config.min_effective_nodes=9
+        r.capture=Mock();r.adb=Mock();r.maa=Mock(side_effect=[{'node_maps':g} for g in groups])
+        self.assertEqual(r.count_effective_nodes(),8)
         r.adb.tap.assert_not_called()
 
     def test_counts_every_nonempty_node_including_hidden_nodes(self):
