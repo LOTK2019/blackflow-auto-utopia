@@ -36,6 +36,9 @@ def make_overlay(config, phase, folder):
         prefix + "Begin": {"next": [prefix + n for n in ("MissionFailedFlag2", "ChooseDifficulty", "StartExplore", "Continue", "StartExploreCD", "Abandon", "ExitThenAbandon", "MapPrepare-FloorEnterZoom", "NextLevel")]},
     }
     if phase in ("prepare", "formal"):
+        # 原生指定招募和候选遍历都直接读取这个全局键（不是主题前缀键）。
+        # 默认5轮不足以覆盖大账号的职业列表；仍由原生重复名单/位置判断提前结束。
+        tasks['RoguelikeRecruitSwipeMaxTime'] = {'maxTimes': 20}
         # 小标题旧 ROI 仅裁到“分队”的局部，部分帧 OCR 返回空串。
         # 使用完整标题区域触发原生分队插件，不改变分队选择逻辑。
         tasks[prefix+'Squad-EnterPoint'] = {

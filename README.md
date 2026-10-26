@@ -6,7 +6,7 @@ MuMu / ADB 桌面脚本，复用 MAA 的开局、干员招募、种植、投资�
 
 **下载：** [最新 Windows 独立版](https://github.com/LOTK2019/blackflow-auto-utopia/releases/latest)。下载 Release 中的完整 Windows ZIP，不要把 GitHub 自动生成的 Source code ZIP 当作可执行版本。完整解压后运行 `自动实托邦.exe`，不要只复制 EXE。
 
-**v0.1.4：** [完整包与覆盖补丁](https://github.com/LOTK2019/blackflow-auto-utopia/releases/tag/v0.1.4)。按MAA恢复“已确认、已进入动画”的招募衔接，统一每张券的动画预算，保留指定干员姓名校验。120项测试及原生无输入计数验证通过，尚未对两名干员的完整动态皮肤招募实机验收。包含v0.1.3自动检测等此前修正；新用户下载完整包，已有v0.1.0至v0.1.3（含rc）可关闭主程序及worker后覆盖累计补丁。具体范围见`验证记录.md`。
+**v0.1.5：** [完整包与覆盖补丁](https://github.com/LOTK2019/blackflow-auto-utopia/releases/tag/v0.1.5)。准备局和正式局的干员列表扫描上限由原生5轮提高至20轮，保留找到即停和原生到头判断，覆盖布丁等列表靠后的干员。120项测试及原生资源加载通过，尚未实机验收超过5页找布丁。包含此前修正；新用户下载完整包，已有v0.1.0至v0.1.4（含rc）可关闭主程序及worker后覆盖累计补丁。
 
 ## 启动
 

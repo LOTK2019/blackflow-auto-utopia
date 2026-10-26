@@ -43,6 +43,8 @@ class ConfigurationTests(unittest.TestCase):
             with tempfile.TemporaryDirectory() as d:
                 make_overlay(Config.load(), phase, Path(d))
                 tasks = json.loads((Path(d) / "resource/tasks/tasks.json").read_text(encoding="utf-8"))
+                # C++插件直接读取无主题前缀的全局键，两个开局阶段都须覆盖。
+                self.assertEqual(tasks['RoguelikeRecruitSwipeMaxTime']['maxTimes'], 20)
                 self.assertEqual(tasks["SwipeToTheDown"]["specificRect"], [480, 150, 80, 40])
                 guard = tasks["AutoUtopia@DifficultyValueConfirm"]
                 self.assertEqual(guard["text"], [target])
